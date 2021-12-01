@@ -47,11 +47,15 @@ fun main() {
      * Counts the number of times a three-measurement sliding window increases from the
      * previous window; stop when not enough measurements to form a triplet
      */
-    fun part2(input: List<String>): Int {
-        val values = valuesFrom(input)
-        return (3..values.lastIndex).count { values[it] > values[it - 3] }
+    fun part2(input: List<String>): Int = timesIncreased(slidingWindowSums(valuesFrom(input)))
+
+    /* mike simmons' solution from CodeRanch */
+    /*
+    {
+    val values = valuesFrom(input)
+    return (3..values.lastIndex).count { values[it] > values[it - 3] }
     }
-    // timesIncreased(slidingWindowSums(valuesFrom(input)))
+    */
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day01_test")
