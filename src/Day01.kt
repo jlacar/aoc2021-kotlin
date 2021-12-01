@@ -1,3 +1,5 @@
+/* See also: https://coderanch.com/t/747456/AoC-Day-Solutions-Spoilers for other solutions */
+
 /* Refactored to leverage power of Kotlin */
 
 fun valuesFrom(input: List<String>) = input.map { it.toInt() }
@@ -45,7 +47,11 @@ fun main() {
      * Counts the number of times a three-measurement sliding window increases from the
      * previous window; stop when not enough measurements to form a triplet
      */
-    fun part2(input: List<String>): Int = timesIncreased(slidingWindowSums(valuesFrom(input)))
+    fun part2(input: List<String>): Int {
+        val values = valuesFrom(input)
+        return (3..values.lastIndex).count { values[it] > values[it - 3] }
+    }
+    // timesIncreased(slidingWindowSums(valuesFrom(input)))
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day01_test")
