@@ -41,13 +41,13 @@ fun main() {
     /**
      * Counts the number of times a measurement increases from the previous measurement
      */
-    fun part1(input: List<String>): Int = timesIncreased(valuesFrom(input))
+    fun part1(input: List<Int>): Int = timesIncreased(input)
 
     /**
      * Counts the number of times a three-measurement sliding window increases from the
      * previous window; stop when not enough measurements to form a triplet
      */
-    fun part2(input: List<String>): Int = timesIncreased(slidingWindowSums(valuesFrom(input)))
+    fun part2(input: List<Int>): Int = timesIncreased(slidingWindowSums(input))
 
     /* mike simmons' solution from CodeRanch */
     /*
@@ -58,11 +58,11 @@ fun main() {
     */
 
     // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test")
+    val testInput = valuesFrom(readInput("Day01_test"))
     check(part1(testInput) == 7)
     check(part2(testInput) == 5)
 
-    val input = readInput("Day01")
+    val input = valuesFrom(readInput("Day01"))
     println(part1(input))
     println(part2(input))
 }
