@@ -4,18 +4,13 @@ fun mapToPairs(input: List<String>) : List<Pair<String, Int>> =
         Pair(d, x.toInt())
     }
 
-fun sumOf(values: List<Pair<String, Int>>, key: String) =
+inline fun sumOf(values: List<Pair<String, Int>>, key: String) =
     values.filter { it.first == key }
-          .map { it.second }
-          .sum()
+          .sumOf { it.second }
 
 fun main() {
-    fun part1(input: List<Pair<String, Int>>): Int {
-        val acc = mapOf("forward" to sumOf(input, "forward"),
-            "down" to sumOf(input, "down"),
-            "up" to sumOf(input, "up"))
-        return acc["forward"]!!.times(acc["down"]!!.minus(acc["up"]!!))
-    }
+    fun part1(input: List<Pair<String, Int>>) =
+        sumOf(input, "forward") * (sumOf(input, "down") - sumOf(input, "up"))
 
     fun part2(input: List<Pair<String, Int>>): Int {
         var depth = 0
