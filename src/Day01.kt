@@ -37,6 +37,12 @@ fun slidingWindowSumsBrute(input: List<String>): MutableList<Int> {
     return sums
 }
 
+fun countIncreases(nums: List<Int>, distance: Int): Int =
+    (0..nums.lastIndex - distance).count { nums[it] < nums[it + distance] }
+
+fun countBigger(nums: List<Int>, windowSize: Int): Int =
+    nums.windowed(size = windowSize).count { it.first() < it.last() }
+
 fun main() {
     /**
      * Counts the number of times a measurement increases from the previous measurement
@@ -65,4 +71,10 @@ fun main() {
     val input = valuesFrom(readInput("Day01"))
     println(part1(input))
     println(part2(input))
+
+    println(countIncreases(input, 1))
+    println(countIncreases(input, 3))
+
+    println(countBigger(input, 2))
+    println(countBigger(input, 4))
 }
