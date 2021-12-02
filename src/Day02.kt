@@ -1,27 +1,26 @@
-fun mapToPairs(input: List<String>) : List<Pair<String, Int>> =
+fun commands(input: List<String>) : List<Pair<String, Int>> =
     input.map {
         val (d, x) = it.split(" ")
         Pair(d, x.toInt())
     }
 
-inline fun sumOf(values: List<Pair<String, Int>>, key: String) =
-    values.filter { it.first == key }
-          .sumOf { it.second }
+inline fun sumOf(commands: List<Pair<String, Int>>, key: String) =
+    commands.filter { it.first == key }.sumOf { it.second }
 
 fun main() {
-    fun forward(input: List<Pair<String, Int>>) =
-        sumOf(input, "forward")
+    fun forward(commands: List<Pair<String, Int>>) =
+        sumOf(commands, "forward")
 
-    fun depth(input: List<Pair<String, Int>>) =
-        sumOf(input, "down") - sumOf(input, "up")
+    fun depth(commands: List<Pair<String, Int>>) =
+        sumOf(commands, "down") - sumOf(commands, "up")
 
-    fun part1(input: List<Pair<String, Int>>) = forward(input) * depth(input)
+    fun part1(commands: List<Pair<String, Int>>) = forward(commands) * depth(commands)
 
-    fun part2(input: List<Pair<String, Int>>): Int {
+    fun part2(commands: List<Pair<String, Int>>): Int {
         var forward = 0
         var depth = 0
         var aim = 0
-        input.forEach {
+        commands.forEach {
             when (it.first) {
                 "down" -> aim += it.second
                 "up" -> aim -= it.second
@@ -35,11 +34,11 @@ fun main() {
     }
 
     // test if implementation meets criteria from the description, like:
-    val testInput = mapToPairs(readInput("Day02_test"))
+    val testInput = commands(readInput("Day02_test"))
     check(part1(testInput) == 150)
     check(part2(testInput) == 900)
 
-    val input = mapToPairs(readInput("Day02"))
-    println(part1(input))
-    println(part2(input))
+    val commands = commands(readInput("Day02"))
+    println(part1(commands))
+    println(part2(commands))
 }
