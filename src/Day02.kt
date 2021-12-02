@@ -9,24 +9,29 @@ inline fun sumOf(values: List<Pair<String, Int>>, key: String) =
           .sumOf { it.second }
 
 fun main() {
-    fun part1(input: List<Pair<String, Int>>) =
-        sumOf(input, "forward") * (sumOf(input, "down") - sumOf(input, "up"))
+    fun forward(input: List<Pair<String, Int>>) =
+        sumOf(input, "forward")
+
+    fun depth(input: List<Pair<String, Int>>) =
+        sumOf(input, "down") - sumOf(input, "up")
+
+    fun part1(input: List<Pair<String, Int>>) = forward(input) * depth(input)
 
     fun part2(input: List<Pair<String, Int>>): Int {
+        var forward = 0
         var depth = 0
         var aim = 0
-        var pos = 0
         input.forEach {
             when (it.first) {
                 "down" -> aim += it.second
                 "up" -> aim -= it.second
                 else -> {
-                    pos += it.second
+                    forward += it.second
                     depth += aim * it.second
                 }
             }
         }
-        return pos * depth
+        return forward * depth
     }
 
     // test if implementation meets criteria from the description, like:
