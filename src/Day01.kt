@@ -5,7 +5,7 @@
 fun valuesFrom(input: List<String>) = input.map { it.toInt() }
 
 fun timesIncreased(values: List<Int>): Int =
-    values.windowed(size = 2).count { it[0] < it[1] }
+    values.windowed(size = 2).count { it.first() < it.last() } // could also be { (a, b) -> a < b }
 
 fun slidingWindowSums(values: List<Int>): List<Int> =
     values.windowed(size = 3).map { it.sum() }
