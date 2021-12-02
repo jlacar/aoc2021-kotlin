@@ -40,8 +40,8 @@ fun slidingWindowSumsBrute(input: List<String>): MutableList<Int> {
 fun countIncreases(nums: List<Int>, distance: Int): Int =
     (0..nums.lastIndex - distance).count { nums[it] < nums[it + distance] }
 
-fun countBigger(nums: List<Int>, windowSize: Int): Int =
-    nums.windowed(size = windowSize).count { it.first() < it.last() }
+fun countBigger(nums: List<Int>, sampleSize: Int): Int =
+    nums.windowed(size = sampleSize).count { it.first() < it.last() }
 
 fun main() {
     /**
