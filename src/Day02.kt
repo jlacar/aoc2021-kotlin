@@ -1,31 +1,33 @@
 /* See also https://youtu.be/4A2WwniJdNc */
 
-fun commands(input: List<String>) : List<Pair<String, Int>> =
-    input.map { it.split(" ") }.map { Pair(it[0], it[1].toInt()) }
+data class Command(val direction: String, val amount: Int)
 
-inline fun sumOf(commands: List<Pair<String, Int>>, direction: String) =
-    commands.filter { it.first == direction }.sumOf { it.second }
+fun commands(input: List<String>) : List<Command> =
+    input.map { it.split(" ") }.map { Command(it[0], it[1].toInt()) }
+
+inline fun sumOf(commands: List<Command>, direction: String) =
+    commands.filter { it.direction == direction }.sumOf { it.amount }
 
 fun main() {
-    fun forward(commands: List<Pair<String, Int>>) =
+    fun forward(commands: List<Command>) =
         sumOf(commands, "forward")
 
-    fun depth(commands: List<Pair<String, Int>>) =
+    fun depth(commands: List<Command>) =
         sumOf(commands, "down") - sumOf(commands, "up")
 
-    fun part1(commands: List<Pair<String, Int>>) = forward(commands) * depth(commands)
+    fun part1(commands: List<Command>) = forward(commands) * depth(commands)
 
-    fun part2(commands: List<Pair<String, Int>>): Int {
+    fun part2(commands: List<Command>): Int {
         var forward = 0
         var depth = 0
         var aim = 0
-        commands.forEach { (direction, x) ->
-            when (direction) {
-                "down" -> aim += x
-                "up" -> aim -= x
+        commands.forEach {
+            when (it.direction) {
+                "down" -> aim += it.amount
+                "up" -> aim -= it.amount
                 else -> {
-                    forward += x
-                    depth += aim * x
+                    forward += it.amount
+                    depth += aim * it.amount
                 }
             }
         }
