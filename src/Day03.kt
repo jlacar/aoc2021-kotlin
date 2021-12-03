@@ -1,5 +1,10 @@
 fun main() {
 
+    /* From https://kalkicode.com/find-1s-complement-of-a-number-in-kotlin */
+    fun totalBits(num: Int): Int = (Math.log(num.toDouble()) / Math.log(2.0)).toInt() + 1
+    fun onesComplement(num: Int): Int = ((1 shl totalBits(num)) - 1) xor num
+    /*----*/
+
     fun inv(num: Int) = num.toString(2)
         .map { if (it == '1') '0' else '1' }
         .joinToString("").toInt(2)
@@ -23,7 +28,7 @@ fun main() {
         }.joinToString("").toInt(2)
     }
 
-    fun part1(input: List<String>): Int = gamma(input).let { it * inv(it) }
+    fun part1(input: List<String>): Int = gamma(input).let { it * onesComplement(it) } // { it * inv(it) }
 
     fun countBit(input: List<String>, place: Int): Int = input.count { it[place] == '1' }
 
