@@ -4,8 +4,8 @@ fun commands(input: List<String>) : List<Pair<String, Int>> =
         Pair(d, x.toInt())
     }
 
-inline fun sumOf(commands: List<Pair<String, Int>>, key: String) =
-    commands.filter { it.first == key }.sumOf { it.second }
+inline fun sumOf(commands: List<Pair<String, Int>>, direction: String) =
+    commands.filter { it.first == direction }.sumOf { it.second }
 
 fun main() {
     fun forward(commands: List<Pair<String, Int>>) =
@@ -20,13 +20,13 @@ fun main() {
         var forward = 0
         var depth = 0
         var aim = 0
-        commands.forEach {
-            when (it.first) {
-                "down" -> aim += it.second
-                "up" -> aim -= it.second
+        commands.forEach { (direction, x) ->
+            when (direction) {
+                "down" -> aim += x
+                "up" -> aim -= x
                 else -> {
-                    forward += it.second
-                    depth += aim * it.second
+                    forward += x
+                    depth += aim * x
                 }
             }
         }
