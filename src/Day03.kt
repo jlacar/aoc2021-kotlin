@@ -30,11 +30,11 @@ fun main() {
 
     fun rating(input: List<String>, seq: CharSequence): Int {
         var numbers = input
-        var i = 0
+        var place = 0
         while (numbers.size > 1) {
-            val bitCriteria = bitCriteria(numbers.size, countBit(numbers, i), seq)
-            numbers = numbers.filter { it[i] == bitCriteria }
-            i += 1
+            val bitCriteria = bitCriteria(numbers.size, countBit(numbers, place), seq)
+            numbers = numbers.filter { it[place] == bitCriteria }
+            place += 1
         }
         return numbers[0].toInt(2) // .also { println(it) }
     }

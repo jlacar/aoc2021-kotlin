@@ -1,8 +1,7 @@
+/* See also https://youtu.be/4A2WwniJdNc */
+
 fun commands(input: List<String>) : List<Pair<String, Int>> =
-    input.map {
-        val (d, x) = it.split(" ")
-        Pair(d, x.toInt())
-    }
+    input.map { it.split(" ") }.map { Pair(it[0], it[1].toInt()) }
 
 inline fun sumOf(commands: List<Pair<String, Int>>, direction: String) =
     commands.filter { it.first == direction }.sumOf { it.second }
