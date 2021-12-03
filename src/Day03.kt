@@ -11,21 +11,14 @@ fun main() {
 
     fun countBits(input: List<String>): IntArray {
         val bitCounts = IntArray(input.first().length)
-        input.forEach {
-            it.forEachIndexed { i, ch ->
-                if (ch == '1') {
-                    bitCounts[i] += 1
-                }
-            }
-        }
+        input.forEach { it.forEachIndexed { i, ch -> if (ch == '1') { bitCounts[i] += 1 } } }
         return bitCounts
     }
 
     fun gamma(input: List<String>): Int {
         val half = input.size / 2
-        return countBits(input).map {
-            if (it > half) '1' else '0'
-        }.joinToString("").toInt(2)
+        return countBits(input).map { if (it > half) '1' else '0' }
+            .joinToString("").toInt(2)
     }
 
     fun part1(input: List<String>): Int = gamma(input).let { it * onesComplement(it) } // { it * inv(it) }
