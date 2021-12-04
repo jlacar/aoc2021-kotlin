@@ -2,14 +2,36 @@ package aoc2015
 
 import readInput
 
+/**
+ * Santa elevator - Santa takes elevator that goes up a floor
+ * on '(' and down a floor on ')'. Building starts at floor 0
+ * and is tall and deep. Can't get to top or reach bottom.
+ */
 fun main() {
-    fun open(s: String): Int = s.count { it == '('}
-    fun closed(s: String): Int = s.count { it == ')'}
 
+    /**
+     * Calculate which floor Santa ends up on after all commands
+     * have been executed. Starts at floor 0.
+     *
+     * Implementation note:
+     * Assuming only '(' and ')' then:
+     *    open = count('(')
+     *    closed = commands.length - open
+     *    open - closed
+     *      = open - (commands.length - open)
+     *      = open - commands.length + open
+     *      = 2 * open - commands.length
+     */
     fun part1(commands: String): Int {
-        return open(commands) - closed(commands)
+        val open = commands.count { it == '(' }
+        return 2 * open - commands.length
     }
 
+    /**
+     * Calculate when Santa first moves to basement (floor -1).
+     * Return the position of the command that moves him into
+     * the basement. Position is 1-based, starts at floor 0.
+     */
     fun part2(commands: String): Int {
         var floor = 0
         var pos = 0
