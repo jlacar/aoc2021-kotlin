@@ -6,14 +6,14 @@ fun main() {
     fun open(s: String): Int = s.count { it == '('}
     fun closed(s: String): Int = s.count { it == ')'}
 
-    fun part1(input: String): Int {
-        return open(input) - closed(input)
+    fun part1(commands: String): Int {
+        return open(commands) - closed(commands)
     }
 
-    fun part2(input: String): Int {
+    fun part2(commands: String): Int {
         var floor = 0
         var pos = 0
-        val hasNotMovedIntoBasement: (ch: Char) -> Boolean = {
+        val hasNotMovedIntoBasement: (Char) -> Boolean = {
             when (it) {
                 '(' -> floor += 1
                 ')' -> floor -= 1
@@ -21,7 +21,7 @@ fun main() {
             pos += 1
             floor != -1
         }
-        input.takeWhile { hasNotMovedIntoBasement(it) }
+        commands.takeWhile { hasNotMovedIntoBasement(it) }
         return pos
     }
 
@@ -37,6 +37,6 @@ fun main() {
     check(part2("()())") == 5)
 
     val input = readInput("aoc2015/Day01")
-    println(part1(input.first()))
-    println(part2(input.first()))
+    println(part1(input.first()))  // 280
+    println(part2(input.first()))  // 1797
 }
