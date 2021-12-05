@@ -51,7 +51,13 @@ fun main() {
     check(part1(testInput) == 4512)
 
     val input = readInput("Day04")
-    println(part1(input)) // 63552
+
+    val part1answer = part1(input)
+
+    // for refactoring: we know what the answer is
+    check(part1answer == 63552)
+    println(part1answer) // 63552
+
     // println(part2(input))
 }
 
@@ -78,8 +84,7 @@ class Board(lines: List<String>) {
     private fun checkBingo(pick: Int) {
         numbers.forEachIndexed { row, rowNums ->
             if (rowNums.contains(pick)) {
-                val col = rowNums.indexOf(pick)
-                _isBingo = allPicked(rowNums.toList()) || allPicked(colNums(col))
+                _isBingo = allPicked(rowNums.toList()) || allPicked(colNums(rowNums.indexOf(pick)))
             }
         }
     }
