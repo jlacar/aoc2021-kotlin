@@ -1,5 +1,3 @@
-import java.util.*
-
 /**
  * Giant Squid Bingo
  *
@@ -8,7 +6,7 @@ import java.util.*
 fun main() {
     fun numberPicker(input: List<String>) = input.first().split(",").map { it.toInt() }
 
-    fun boardsFrom(input: List<String>) =
+    fun boardsFrom(input: List<String>): List<Board> =
         input.slice(2..input.lastIndex).chunked(6).map { Board(it.take(5)) }
 
     fun noBingo(boards: List<Board>, pick: Int): Boolean {
@@ -22,7 +20,7 @@ fun main() {
      * Final score is sum of unmarked numbers * winning number called
      */
     fun part1(input: List<String>): Int {
-        val boards: List<Board> = boardsFrom(input)
+        val boards = boardsFrom(input)
         numberPicker(input).takeWhile { pick -> noBingo(boards, pick) }
         return boards.first { it.isBingo }.score
     }
@@ -54,9 +52,9 @@ fun main() {
 
     val part1answer = part1(input)
 
-    // for refactoring: we know what the answer is
+    // for refactoring (we know what the answer is)
     check(part1answer == 63552)
-    println(part1answer) // 63552
+    println(part1answer)
 
     // println(part2(input))
 }
@@ -75,22 +73,24 @@ class Board(lines: List<String>) {
     private var _isBingo: Boolean = false
     val isBingo: Boolean get() = _isBingo
 
-    private fun isFound(pick: Int) = numbers.any { it.contains(pick) }
-
     private fun allPicked(line: List<Int>) = markedPicks.containsAll(line)
 
-    private fun colNums(col: Int): List<Int> = numbers.map { it[col] }
+    private fun column(col: Int): List<Int> = numbers.map { it[col] }
+
+    private fun hasBingoIn(row: IntArray, pick: Int) =
+        allPicked(row.toList()) || allPicked(column(row.indexOf(pick)))
 
     private fun checkBingo(pick: Int) {
-        numbers.forEachIndexed { row, rowNums ->
-            if (rowNums.contains(pick)) {
-                _isBingo = allPicked(rowNums.toList()) || allPicked(colNums(rowNums.indexOf(pick)))
+        numbers.forEach { row ->
+            if (row.contains(pick)) {
+                _isBingo = hasBingoIn(row, pick)
+                return
             }
         }
     }
 
     fun mark(pick: Int): Board {
-        if (isFound(pick)) {
+        if (numbers.any { it.contains(pick) }) {
             markedPicks.add(pick).also {
                 _score -= pick
                 checkBingo(pick)
