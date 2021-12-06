@@ -4,7 +4,7 @@
  * https://adventofcode.com/2021/day/6
  */
 fun main() {
-    fun bruteForcePart1(input: List<Int>, days: Int): Long {
+    fun naiveSolution(input: List<Int>, days: Int = 80): Long {
         var school = mutableListOf<Int>().also { it.addAll(input) }
         repeat(days) {
             val newFish = school.count { it == 0 }
@@ -20,27 +20,25 @@ fun main() {
         return school.size.toLong()
     }
 
-    fun differentWayPart1(input: List<Int>, days: Int = 80): Long {
-        val counts = LongArray(9) { 0L }
-        input.forEach { counts.set(it, counts.get(it) + 1) }
+    fun moreEfficientSolution(input: List<Int>, days: Int = 80): Long {
+        val timers = LongArray(9) { 0L }
+        input.forEach { timers.set(it, timers.get(it) + 1) }
         repeat(days) {
-            val newFish = counts[0]
+            val newFish = timers[0]
             for (i in 0..7) {
-                counts[i] = counts[i+1]
+                timers[i] = timers[i+1]
             }
-            counts[6] += newFish
-            counts[8] = newFish
+            timers[6] += newFish
+            timers[8] = newFish
         }
-        return counts.sum()
+        return timers.sum()
     }
 
-    fun part1(input: List<Int>, days: Int = 80): Long =
-//        bruteForcePart1(input, days)
-        differentWayPart1(input)
+    fun part1(input: List<Int>): Long =
+//        naiveSolution(input)
+        moreEfficientSolution(input)
 
-    fun part2(input: List<Int>): Long {
-        return differentWayPart1(input, 256)
-    }
+    fun part2(input: List<Int>): Long = moreEfficientSolution(input, 256)
 
     // test if implementation meets criteria from the description, like:
     val testInput = toIntList(readInput("Day06_test").first())
@@ -48,6 +46,6 @@ fun main() {
     check(part2(testInput) == 26984457539)
 
     val input = toIntList(readInput("Day06").first())
-    println(part1(input).also { check(it == 345793L) })
-    println(part2(input).also { check(it == 1572643095893L)})
+    println(part1(input).also { check(it == 345793L) }) // solved
+    println(part2(input).also { check(it == 1572643095893L)}) // solved
 }
