@@ -1,5 +1,3 @@
-import kotlin.math.abs
-
 data class Point(val x: Int, val y: Int)
 
 fun toPoint(xy: String): Point = xy.split(",")
@@ -17,19 +15,19 @@ fun main() {
         graph.addAll(segment.points())
     }
 
-    fun part1 (input: List<String>): Int {
+    fun intersectCount(graph: MutableList<Point>) =
+        graph.groupingBy { it }.eachCount().filter { it.value >= 2 }.count()
+
+    fun solve(input: List<String>, criteria: (LineSegment) -> Boolean = { true }): Int {
         val graph = mutableListOf<Point>()
         toLineSegments(input)
-            .filter { it.isHorizontal() || it.isVertical() }
+            .filter(criteria)
             .forEach { plot(graph, it) }
-        return graph.groupingBy { it }.eachCount().filter { it.value >= 2 }.count()
+        return intersectCount(graph)
     }
 
-    fun part2(input: List<String>): Int {
-        val graph = mutableListOf<Point>()
-        toLineSegments(input).forEach { plot(graph, it) }
-        return graph.groupingBy { it }.eachCount().filter { it.value >= 2 }.count()
-    }
+    fun part1(input: List<String>) = solve(input) { it.isHorizontal() || it.isVertical() }
+    fun part2(input: List<String>) = solve(input)
 
     with(LineSegment(toEnds("1,2 -> 3,4"))) {
         println("${ends} - Type: ${lineType()}")
@@ -85,17 +83,17 @@ class LineSegment(val ends: Pair<Point, Point>) {
         else -> diagonalPoints()
     }
 
-    private fun rangeFor(start: Int, finish: Int) =
+    private fun rangeOf(start: Int, finish: Int) =
         if (start <= finish) (start..finish) else (start downTo finish)
 
     private fun diagonalPoints(): List<Point> =
-        rangeFor(ends.first.x, ends.second.x)
-            .zip(rangeFor(ends.first.y, ends.second.y)) { x, y -> Point(x, y) }
+        rangeOf(ends.first.x, ends.second.x)
+            .zip(rangeOf(ends.first.y, ends.second.y)) { x, y -> Point(x, y) }
 
-    private fun horizontalPoints(): List<Point> = rangeFor(ends.first.x, ends.second.x)
+    private fun horizontalPoints(): List<Point> = rangeOf(ends.first.x, ends.second.x)
         .map { x -> Point(x, ends.first.y) }
 
-    private fun verticalPoints(): List<Point> = rangeFor(ends.first.y, ends.second.y)
+    private fun verticalPoints(): List<Point> = rangeOf(ends.first.y, ends.second.y)
         .map { y -> Point(ends.first.x, y) }
 
     // utility methods
