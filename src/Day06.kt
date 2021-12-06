@@ -5,7 +5,17 @@
  */
 fun main() {
     fun part1(input: List<Int>): Int {
-        return input.size
+        var school = mutableListOf<Int>().also { it.addAll(input) }
+        for (day in 1..80) {
+            val newFish = school.count { it == 0 }
+            school.replaceAll { timer -> when(timer) {
+                in 1..8 -> timer - 1
+                0 -> 6
+                else -> timer
+            } }
+            school.addAll(List(newFish) {8})
+        }
+        return school.size
     }
 
     fun part2(input: List<Int>): Int {
@@ -16,7 +26,7 @@ fun main() {
     val testInput = toIntList(readInput("Day06_test").first())
     check(part1(testInput) == 5934)
 
-    val input = toIntList(readInput("DayXX").first())
-    println(part1(input))
+    val input = toIntList(readInput("Day06").first())
+    println(part1(input).also { check(it == 345793) })
     println(part2(input))
 }
