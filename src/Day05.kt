@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 data class Point(val x: Int, val y: Int)
 
 fun toPoint(xy: String): Point = xy.split(",")
@@ -24,8 +26,9 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        toLineSegments(input)
-        return input.size
+        val graph = mutableListOf<Point>()
+        toLineSegments(input).forEach { plot(graph, it) }
+        return graph.groupingBy { it }.eachCount().filter { it.value >= 2 }.count()
     }
 
     with(LineSegment(toEnds("1,2 -> 3,4"))) {
@@ -65,30 +68,37 @@ fun main() {
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day05_test")
     check(part1(testInput) == 5)
+    check(part2(testInput) == 12)
 
     val input = readInput("Day05")
     println(part1(input).also { check(it == 5608) }) // solved
-    println(part2(input))
+    println(part2(input).also { check(it == 20299) }) // solved
 }
 
 class LineSegment(val ends: Pair<Point, Point>) {
     fun isHorizontal(): Boolean = ends.first.y == ends.second.y
     fun isVertical(): Boolean = ends.first.x == ends.second.x
 
-    fun points(): List<Point> {
-        if (isHorizontal()) {
-            val xRange = if (ends.first.x < ends.second.x) (ends.first.x..ends.second.x)
-                else (ends.first.x downTo ends.second.x)
-            return xRange.map { x -> Point(x, ends.first.y) }
-        }
-        if (isVertical()) {
-            val yRange = if (ends.first.y < ends.second.y) (ends.first.y..ends.second.y)
-                else (ends.first.y downTo ends.second.y)
-            return yRange.map { y -> Point(ends.first.x, y) }
-        }
-        return emptyList()
+    fun points(): List<Point> = when {
+        isHorizontal() -> horizontalPoints()
+        isVertical() -> verticalPoints()
+        else -> diagonalPoints()
     }
 
+    private fun rangeFor(start: Int, finish: Int) =
+        if (start <= finish) (start..finish) else (start downTo finish)
+
+    private fun diagonalPoints(): List<Point> =
+        rangeFor(ends.first.x, ends.second.x)
+            .zip(rangeFor(ends.first.y, ends.second.y)) { x, y -> Point(x, y) }
+
+    private fun horizontalPoints(): List<Point> = rangeFor(ends.first.x, ends.second.x)
+        .map { x -> Point(x, ends.first.y) }
+
+    private fun verticalPoints(): List<Point> = rangeFor(ends.first.y, ends.second.y)
+        .map { y -> Point(ends.first.x, y) }
+
+    // utility methods
     override fun toString(): String = "${ends.first.x},${ends.first.y} -> ${ends.second.x},${ends.second.y}"
-    fun lineType() = if (isHorizontal()) '—' else if (isVertical()) '|' else '?'
+    fun lineType() = if (isHorizontal()) '—' else if (isVertical()) '|' else '/'
 }
