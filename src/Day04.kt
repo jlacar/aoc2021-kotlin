@@ -4,7 +4,7 @@
  * 5x5 grids, only complete rows and columns win, no diagonals.
  */
 fun main() {
-    fun numberPicker(input: List<String>) = input.first().split(",").map { it.toInt() }
+    fun numberPicker(csv: String) = toIntList(csv)
 
     fun boardsFrom(input: List<String>): List<Board> =
         input.slice(2..input.lastIndex).chunked(6).map { Board(it.take(5)) }
@@ -16,12 +16,9 @@ fun main() {
         return true
     }
 
-    /**
-     * Final score is sum of unmarked numbers * winning number called
-     */
     fun part1(input: List<String>): Int {
         val boards = boardsFrom(input)
-        numberPicker(input).takeWhile { pick -> noBingo(boards, pick) }
+        numberPicker(input.first()).takeWhile { pick -> noBingo(boards, pick) }
         return boards.first { it.isBingo }.score
     }
 
@@ -45,7 +42,7 @@ fun main() {
     fun part2(input: List<String>): Int {
         val boards = boardsFrom(input)
         val bingoed = mutableListOf<Board>()
-        numberPicker(input).takeWhile { pick ->
+        numberPicker(input.first()).takeWhile { pick ->
             hasMoreToPlay(boards, bingoed, pick)
         }
         return bingoed.last().score

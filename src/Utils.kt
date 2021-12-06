@@ -3,6 +3,11 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 /**
+ * Converts a comma separated list of values into a List<Int>
+ */
+fun toIntList(csv: String): List<Int> = csv.split(",").map { it.toInt() }
+
+/**
  * Reads lines from the given input txt file.
  */
 fun readInput(name: String) = File("src", "$name.txt").readLines()
