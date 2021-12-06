@@ -11,13 +11,11 @@ fun toLineSegments(s: List<String>): List<LineSegment> =
     s.map { desc -> LineSegment(toEnds(desc)) }
 
 fun main() {
-    fun solve(input: List<String>, criteria: (LineSegment) -> Boolean = { true }): Int {
-        val graph = Graph()
-        toLineSegments(input)
-            .filter(criteria)
-            .forEach { graph.plot(it) }
-        return graph.intersectCount()
-    }
+    fun solve(input: List<String>, criteria: (LineSegment) -> Boolean = { true }): Int =
+        with (Graph()) {
+            toLineSegments(input).filter(criteria).forEach { plot(it) }
+            intersectCount()
+        }
 
     fun part1(input: List<String>) = solve(input) { it.isHorizontal() || it.isVertical() }
     fun part2(input: List<String>) = solve(input)
