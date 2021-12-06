@@ -25,8 +25,30 @@ fun main() {
         return boards.first { it.isBingo }.score
     }
 
+    fun hasMoreToPlay(
+        boards: List<Board>,
+        bingoed: MutableList<Board>,
+        pick: Int
+    ): Boolean {
+        boards.filter { !it.isBingo }.forEach { board ->
+            board.mark(pick)
+            if (board.isBingo) {
+                bingoed.add(board)
+            }
+        }
+        return bingoed.size < boards.size
+    }
+
+    /**
+     * Let the Giant Squid win: find score of last board that Bingos
+     */
     fun part2(input: List<String>): Int {
-        return input.size
+        val boards = boardsFrom(input)
+        val bingoed = mutableListOf<Board>()
+        numberPicker(input).takeWhile { pick ->
+            hasMoreToPlay(boards, bingoed, pick)
+        }
+        return bingoed.last().score
     }
 
     val testBoard = Board(listOf("1 2 3", "4 5 6", "7 8 9"))
@@ -47,16 +69,19 @@ fun main() {
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day04_test")
     check(part1(testInput) == 4512)
+    check(part2(testInput) == 1924)
 
     val input = readInput("Day04")
 
+    // for refactoring (answer = 63552)
     val part1answer = part1(input)
-
-    // for refactoring (we know what the answer is)
     check(part1answer == 63552)
     println(part1answer)
 
-    // println(part2(input))
+    // for refactoring (answer = 9020)
+    val part2answer = part2(input)
+    check(part2answer == 9020)
+    println(part2(input))
 }
 
 fun toIntArray(s: String): IntArray = s.trim()
@@ -73,12 +98,12 @@ class Board(lines: List<String>) {
     private var _isBingo: Boolean = false
     val isBingo: Boolean get() = _isBingo
 
-    private fun allPicked(line: List<Int>) = markedPicks.containsAll(line)
+    private fun bingo(line: List<Int>) = markedPicks.containsAll(line)
 
-    private fun column(col: Int): List<Int> = numbers.map { it[col] }
+    private fun column(n: Int): List<Int> = numbers.map { it[n] }
 
     private fun hasBingoIn(row: IntArray, pick: Int) =
-        allPicked(row.toList()) || allPicked(column(row.indexOf(pick)))
+        bingo(row.toList()) || bingo(column(row.indexOf(pick)))
 
     private fun checkBingo(pick: Int) {
         numbers.forEach { row ->
