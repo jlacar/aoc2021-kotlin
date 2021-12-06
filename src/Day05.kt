@@ -12,7 +12,8 @@ fun toLineSegments(s: List<String>): List<LineSegment> =
 
 fun main() {
     fun part1(input: List<String>): Int {
-        toLineSegments(input).forEach { println(it) }
+        toLineSegments(input).filter { it.isHorizontal() || it.isVertical() }
+            .forEach { println("$it : ${it.lineType()}") }
         return input.size
     }
 
