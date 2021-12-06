@@ -11,10 +11,16 @@ fun toLineSegments(s: List<String>): List<LineSegment> =
     s.map { desc -> LineSegment(toEnds(desc)) }
 
 fun main() {
-    fun part1(input: List<String>): Int {
-        toLineSegments(input).filter { it.isHorizontal() || it.isVertical() }
-            .forEach { println("$it : ${it.lineType()}") }
-        return input.size
+    fun plot(graph: MutableList<Point>, segment: LineSegment) {
+        graph.addAll(segment.points())
+    }
+
+    fun part1 (input: List<String>): Int {
+        val graph = mutableListOf<Point>()
+        toLineSegments(input)
+            .filter { it.isHorizontal() || it.isVertical() }
+            .forEach { plot(graph, it) }
+        return graph.groupingBy { it }.eachCount().filter { it.value >= 2 }.count()
     }
 
     fun part2(input: List<String>): Int {
@@ -61,13 +67,12 @@ fun main() {
     check(part1(testInput) == 5)
 
     val input = readInput("Day05")
-    println(part1(input))
+    println(part1(input).also { check(it == 5608) }) // solved
     println(part2(input))
 }
 
 class LineSegment(val ends: Pair<Point, Point>) {
     fun isHorizontal(): Boolean = ends.first.y == ends.second.y
-
     fun isVertical(): Boolean = ends.first.x == ends.second.x
 
     fun points(): List<Point> {
@@ -85,8 +90,5 @@ class LineSegment(val ends: Pair<Point, Point>) {
     }
 
     override fun toString(): String = "${ends.first.x},${ends.first.y} -> ${ends.second.x},${ends.second.y}"
-
     fun lineType() = if (isHorizontal()) '—' else if (isVertical()) '|' else '?'
-
-    fun reversed(): LineSegment = LineSegment(Pair(ends.second, ends.first))
 }
