@@ -11,19 +11,12 @@ fun toLineSegments(s: List<String>): List<LineSegment> =
     s.map { desc -> LineSegment(toEnds(desc)) }
 
 fun main() {
-    fun plot(graph: MutableList<Point>, segment: LineSegment) {
-        graph.addAll(segment.points())
-    }
-
-    fun intersectCount(graph: MutableList<Point>) =
-        graph.groupingBy { it }.eachCount().filter { it.value >= 2 }.count()
-
     fun solve(input: List<String>, criteria: (LineSegment) -> Boolean = { true }): Int {
-        val graph = mutableListOf<Point>()
+        val graph = Graph()
         toLineSegments(input)
             .filter(criteria)
-            .forEach { plot(graph, it) }
-        return intersectCount(graph)
+            .forEach { graph.plot(it) }
+        return graph.intersectCount()
     }
 
     fun part1(input: List<String>) = solve(input) { it.isHorizontal() || it.isVertical() }
@@ -99,4 +92,10 @@ class LineSegment(val ends: Pair<Point, Point>) {
     // utility methods
     override fun toString(): String = "${ends.first.x},${ends.first.y} -> ${ends.second.x},${ends.second.y}"
     fun lineType() = if (isHorizontal()) '—' else if (isVertical()) '|' else '/'
+}
+
+class Graph {
+    val graph = mutableListOf<Point>()
+    fun plot(line: LineSegment) = graph.addAll(line.points())
+    fun intersectCount() = graph.groupingBy { it }.eachCount().filter { it.value >= 2 }.count()
 }

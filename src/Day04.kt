@@ -122,6 +122,7 @@ class Board(lines: List<String>) {
     }
 }
 
+
 //    override fun toString(): String =
 //        numbers.map { it.joinToString(separator = ",") }
 //            .joinToString(",\n")
