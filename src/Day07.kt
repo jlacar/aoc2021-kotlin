@@ -1,3 +1,8 @@
+/**
+ * AoC 2021, Day 07: Align crabs and escape the giant whale
+ *
+ * https://adventofcode.com/2021/day/7
+ */
 fun main() {
     fun part1(input: List<Int>): Int {
         return input.size
