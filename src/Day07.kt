@@ -1,7 +1,8 @@
 /**
- * AoC 2021, Day 07: Align crabs and escape the giant whale
- *
+ * AoC 2021, Day 07: The Treachery of Whales
  * https://adventofcode.com/2021/day/7
+ *
+ * Align the crabs and escape the giant whale
  */
 fun main() {
     fun part1(input: List<Int>): Int {
@@ -16,7 +17,7 @@ fun main() {
     val testInput = toIntList("16,1,2,0,4,2,7,1,2,14")
     check(part1(testInput) == 37)
 
-    val input = toIntList(readInput("DayXX").first())
+    val input = toIntList(readInput("Day07").first())
     println(part1(input))
     println(part2(input))
 }
