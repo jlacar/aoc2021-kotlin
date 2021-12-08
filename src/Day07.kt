@@ -1,4 +1,5 @@
 import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * AoC 2021, Day 07: The Treachery of Whales
@@ -7,16 +8,16 @@ import kotlin.math.abs
  * Align the crabs and escape the giant whale
  */
 fun main() {
-    /**
-     * Dijkstra's shortest path from a single source node
-     */
+    fun distancesFrom(source: Int, nodes: Map<Int, Int>) =
+        nodes.keys.filter { it != source }
+            .map { abs(it - source) * nodes[it]!! }
+            .sum()
+
     fun part1(input: List<Int>): Int {
-        val frequencies = input.groupingBy { it }.eachCount()
+        val nodes = input.groupingBy { it }.eachCount()
         var shortest = Int.MAX_VALUE
-        for (source in frequencies.keys) {
-            shortest = frequencies.keys.filter { it != source }
-                .map { abs(it - source) * frequencies[it]!! }
-                .sum().let { if (it < shortest) it else shortest }
+        for (source in nodes.keys) {
+            shortest = min(distancesFrom(source, nodes), shortest)
         }
         return shortest
     }
