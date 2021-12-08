@@ -10,26 +10,30 @@ import kotlin.math.abs
  */
 fun main() {
 
-    fun gaussSum(n: Int) = n * (n + 1) / 2
+    fun compounding(n: Int) = n * (n + 1) / 2
 
-    fun distanceTo(position: Int, crabs: Map<Int, Int>, fuelUsed: (Int) -> Int): Int =
+    fun costToAlignAll(crabs: Map<Int, Int>, position: Int, fuelUsed: (Int) -> Int): Int =
         crabs.keys.filter { it != position }.sumOf(fuelUsed)
 
-    fun cheapestAlignmentOf(crabPositions: Map<Int, Int>, fuelUsed: (Int) -> Int): Int =
-        (crabPositions.minOf { it.key } .. crabPositions.maxOf { it.key }).minOf(fuelUsed)
+    fun allPossiblePositionsOf(crabs: Map<Int, Int>) = (crabs.minOf { it.key }..crabs.maxOf { it.key })
 
-    fun part1(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs)
-        { position -> distanceTo(position, crabs) { abs(it - position) * crabs[it]!! } }
+    fun cheapestAlignmentOf(crabs: Map<Int, Int>, costToAlign: (Int) -> Int): Int =
+        allPossiblePositionsOf(crabs).minOf(costToAlign)
 
-    fun part2(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs)
-        { position -> distanceTo(position, crabs) { gaussSum(abs(it - position)) * crabs[it]!! } }
+    fun fuelToMove(crab: Int, toPosition: Int) = abs(crab - toPosition)
+
+    fun linearCost(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs)
+        { position -> costToAlignAll(crabs, position) { fuelToMove(it, position) * crabs[it]!! } }
+
+    fun compoundCost(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs)
+        { position -> costToAlignAll(crabs, position) { compounding(fuelToMove(it, position)) * crabs[it]!! } }
 
     // test if implementation meets criteria from the description, like:
     val testInput = toIntList("16,1,2,0,4,2,7,1,2,14").groupingBy { it }.eachCount()
-    check(part1(testInput) == 37)
-    check(part2(testInput) == 168)
+    check(linearCost(testInput) == 37)
+    check(compoundCost(testInput) == 168)
 
     val crabs = toIntList(readInput("Day07").first()).groupingBy { it }.eachCount()
-    println(part1(crabs).also { check(it == 336701) }) // verified solution
-    println(part2(crabs).also { check(it == 95167302) }) // verified solution
+    println(linearCost(crabs).also { check(it == 336701) })         // accepted solution, Part 1
+    println(compoundCost(crabs).also { check(it == 95167302) })   // accepted solution, Part 2
 }
