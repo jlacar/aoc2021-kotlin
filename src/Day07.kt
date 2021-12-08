@@ -15,11 +15,7 @@ fun main() {
 
     fun part1(input: List<Int>): Int {
         val nodes = input.groupingBy { it }.eachCount()
-        var shortest = Int.MAX_VALUE
-        for (source in nodes.keys) {
-            shortest = min(distancesFrom(source, nodes), shortest)
-        }
-        return shortest
+        return nodes.keys.map { source -> distancesFrom(source, nodes) }.minOf { it }
     }
 
     fun part2(input: List<Int>): Int {
