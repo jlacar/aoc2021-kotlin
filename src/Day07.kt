@@ -19,13 +19,12 @@ fun main() {
         nodes.keys.filter { it != source }
             .sumOf { gaussSum(abs(it - source)) * nodes[it]!! }
 
-    fun part1(nodes: Map<Int, Int>): Int =
+    fun solve(nodes: Map<Int, Int>, shortestPathCalculation: (Int) -> Int): Int =
         (nodes.minOf { it.key } .. nodes.maxOf { it.key })
-            .minOf { source -> distancesFrom(source, nodes) }
+            .minOf(shortestPathCalculation)
 
-    fun part2(nodes: Map<Int, Int>): Int =
-        (nodes.minOf { it.key } .. nodes.maxOf { it.key })
-            .minOf { source -> gaussDistancesFrom(source, nodes) }
+    fun part1(nodes: Map<Int, Int>): Int = solve(nodes) { source -> distancesFrom(source, nodes) }
+    fun part2(nodes: Map<Int, Int>): Int = solve(nodes) { source -> gaussDistancesFrom(source, nodes) }
 
     // test if implementation meets criteria from the description, like:
     val testInput = toIntList("16,1,2,0,4,2,7,1,2,14").groupingBy { it }.eachCount()
