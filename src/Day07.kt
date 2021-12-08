@@ -9,22 +9,22 @@ import kotlin.math.abs
  * See also: https://coderanch.com/t/747834/AoC-Day-Solutions-Spoilers
  */
 fun main() {
-    fun distancesFrom(source: Int, nodes: Map<Int, Int>) =
-        nodes.keys.filter { it != source }
-            .sumOf { abs(it - source) * nodes[it]!! }
 
     fun gaussSum(n: Int) = n * (n + 1) / 2
 
-    fun gaussDistancesFrom(source: Int, nodes: Map<Int, Int>) =
-        nodes.keys.filter { it != source }
-            .sumOf { gaussSum(abs(it - source)) * nodes[it]!! }
+    fun distanceTo(source: Int, nodes: Map<Int, Int>, calc: (Int) -> Int): Int =
+        nodes.keys.filter { it != source }.sumOf(calc)
 
-    fun solve(nodes: Map<Int, Int>, shortestPathCalculation: (Int) -> Int): Int =
-        (nodes.minOf { it.key } .. nodes.maxOf { it.key })
-            .minOf(shortestPathCalculation)
+    fun solve(nodes: Map<Int, Int>, shortestPath: (Int) -> Int): Int =
+        (nodes.minOf { it.key } .. nodes.maxOf { it.key }).minOf(shortestPath)
 
-    fun part1(nodes: Map<Int, Int>): Int = solve(nodes) { source -> distancesFrom(source, nodes) }
-    fun part2(nodes: Map<Int, Int>): Int = solve(nodes) { source -> gaussDistancesFrom(source, nodes) }
+    fun part1(nodes: Map<Int, Int>): Int = solve(nodes) { source ->
+        distanceTo(source, nodes) { abs(it - source) * nodes[it]!! }
+    }
+
+    fun part2(nodes: Map<Int, Int>): Int = solve(nodes) { source ->
+        distanceTo(source, nodes) { gaussSum(abs(it - source)) * nodes[it]!! }
+    }
 
     // test if implementation meets criteria from the description, like:
     val testInput = toIntList("16,1,2,0,4,2,7,1,2,14").groupingBy { it }.eachCount()
