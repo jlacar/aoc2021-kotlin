@@ -27,11 +27,13 @@ fun main() {
 
     val linearCostFormula: (Int, Int) -> Int = { crab: Int, position: Int -> fuelToMove(crab, position) }
 
-    val compoundCostFormula: (Int, Int, Int) -> Int = { crab: Int, position: Int, count: Int ->
-        compounding(fuelToMove(crab, position)) * count }
+    val compoundCostFormula: (Int, Int) -> Int = { crab: Int, position: Int -> compounding(fuelToMove(crab, position)) }
 
     fun part1(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs) { position ->
         costToAlignAll2(crabs, position, linearCostFormula) }
+
+    fun part2(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs) { position ->
+        costToAlignAll2(crabs, position, compoundCostFormula) }
 
     fun linearCost(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs)
         { position -> costToAlignAll(crabs, position) { fuelToMove(it, position) * crabs[it]!! } }
@@ -48,4 +50,5 @@ fun main() {
     println(linearCost(crabs).also { check(it == 336701) })         // accepted solution, Part 1
     println(part1(crabs).also { check(it == 336701) })         // accepted solution, Part 1
     println(compoundCost(crabs).also { check(it == 95167302) })   // accepted solution, Part 2
+    println(part2(crabs).also { check(it == 95167302) })   // accepted solution, Part 2
 }
