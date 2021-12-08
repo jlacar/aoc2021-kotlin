@@ -10,34 +10,45 @@ import kotlin.math.abs
  */
 fun main() {
 
-    fun compounding(n: Int) = n * (n + 1) / 2
-
-    fun costToAlignAll2(crabs: Map<Int, Int>, position: Int, fuelUsed: (Int, Int) -> Int): Int =
-        crabs.keys.filter { it != position }.sumOf { fuelUsed(it, position) * crabs[it]!! }
-
     fun allPossiblePositionsOf(crabs: Map<Int, Int>) = (crabs.minOf { it.key }..crabs.maxOf { it.key })
 
-    fun cheapestAlignmentOf(crabs: Map<Int, Int>, costToAlign: (Int) -> Int): Int =
-        allPossiblePositionsOf(crabs).minOf(costToAlign)
+    fun cheapestWayToAlign(crabs: Map<Int, Int>, costCalculation: (Int) -> Int): Int =
+        allPossiblePositionsOf(crabs).minOf(costCalculation)
 
-    fun fuelToMove(crab: Int, toPosition: Int) = abs(crab - toPosition)
+    fun distance(crab: Int, toPosition: Int) = abs(crab - toPosition)
 
-    val linearCostFormula: (Int, Int) -> Int = { crab: Int, position: Int -> fuelToMove(crab, position) }
+    /**
+     * Calculates the cost to move all the given crabs to the given position
+     * using the given formula to calculate the fuel cost.
+     *
+     * @param crabs Map where each key is a position and the value is the
+     *              number of crabs in that position
+     * @param position the position at which to align all the crabs
+     * @param costFormula the formula used to calculate the amount of fuel
+     *              needed to move a crab to the given position
+     */
+    fun costToMove(crabs: Map<Int, Int>, position: Int, costFormula: (Int, Int) -> Int): Int =
+        crabs.keys.filter { it != position }.sumOf { costFormula(it, position) * crabs[it]!! }
 
-    val compoundCostFormula: (Int, Int) -> Int = { crab: Int, position: Int -> compounding(fuelToMove(crab, position)) }
+    fun compounding(n: Int) = n * (n + 1) / 2
 
-    fun part1(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs) { position ->
-        costToAlignAll2(crabs, position, linearCostFormula) }
+    val linearFormula: (Int, Int) -> Int = { crab: Int, position: Int -> distance(crab, position) }
+    val compoundFormula: (Int, Int) -> Int = { crab: Int, position: Int -> compounding(distance(crab, position)) }
 
-    fun part2(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs) { position ->
-        costToAlignAll2(crabs, position, compoundCostFormula) }
+    fun leastCostLinear(crabs: Map<Int, Int>): Int = cheapestWayToAlign(crabs) { position ->
+        costToMove(crabs, position, linearFormula)
+    }
+
+    fun leastCostCompounded(crabs: Map<Int, Int>): Int = cheapestWayToAlign(crabs) { position ->
+        costToMove(crabs, position, compoundFormula)
+    }
 
     // test if implementation meets criteria from the description, like:
     val testInput = toIntList("16,1,2,0,4,2,7,1,2,14").groupingBy { it }.eachCount()
-    check(part1(testInput) == 37)
-    check(part2(testInput) == 168)
+    check(leastCostLinear(testInput) == 37)
+    check(leastCostCompounded(testInput) == 168)
 
     val crabs = toIntList(readInput("Day07").first()).groupingBy { it }.eachCount()
-    println(part1(crabs).also { check(it == 336701) })         // accepted solution, Part 1
-    println(part2(crabs).also { check(it == 95167302) })   // accepted solution, Part 2
+    println(leastCostLinear(crabs).also { check(it == 336701) })       // accepted solution, Part 1
+    println(leastCostCompounded(crabs).also { check(it == 95167302) })   // accepted solution, Part 2
 }
