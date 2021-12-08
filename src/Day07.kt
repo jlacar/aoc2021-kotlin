@@ -18,13 +18,11 @@ fun main() {
     fun solve(nodes: Map<Int, Int>, shortestPath: (Int) -> Int): Int =
         (nodes.minOf { it.key } .. nodes.maxOf { it.key }).minOf(shortestPath)
 
-    fun part1(nodes: Map<Int, Int>): Int = solve(nodes) { source ->
-        distanceTo(source, nodes) { abs(it - source) * nodes[it]!! }
-    }
+    fun part1(nodes: Map<Int, Int>): Int = solve(nodes)
+        { source -> distanceTo(source, nodes) { abs(it - source) * nodes[it]!! } }
 
-    fun part2(nodes: Map<Int, Int>): Int = solve(nodes) { source ->
-        distanceTo(source, nodes) { gaussSum(abs(it - source)) * nodes[it]!! }
-    }
+    fun part2(nodes: Map<Int, Int>): Int = solve(nodes)
+        { source -> distanceTo(source, nodes) { gaussSum(abs(it - source)) * nodes[it]!! } }
 
     // test if implementation meets criteria from the description, like:
     val testInput = toIntList("16,1,2,0,4,2,7,1,2,14").groupingBy { it }.eachCount()
