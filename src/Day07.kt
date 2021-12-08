@@ -15,8 +15,8 @@ fun main() {
     fun distanceTo(position: Int, crabs: Map<Int, Int>, fuelUsed: (Int) -> Int): Int =
         crabs.keys.filter { it != position }.sumOf(fuelUsed)
 
-    fun cheapestAlignmentOf(nodes: Map<Int, Int>, fuelUsed: (Int) -> Int): Int =
-        (nodes.minOf { it.key } .. nodes.maxOf { it.key }).minOf(fuelUsed)
+    fun cheapestAlignmentOf(crabPositions: Map<Int, Int>, fuelUsed: (Int) -> Int): Int =
+        (crabPositions.minOf { it.key } .. crabPositions.maxOf { it.key }).minOf(fuelUsed)
 
     fun part1(crabs: Map<Int, Int>): Int = cheapestAlignmentOf(crabs)
         { position -> distanceTo(position, crabs) { abs(it - position) * crabs[it]!! } }
