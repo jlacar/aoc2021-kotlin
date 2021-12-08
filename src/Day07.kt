@@ -15,8 +15,8 @@ fun main() {
     fun distanceTo(source: Int, nodes: Map<Int, Int>, calc: (Int) -> Int): Int =
         nodes.keys.filter { it != source }.sumOf(calc)
 
-    fun cheapestAlignmentOf(nodes: Map<Int, Int>, shortestPath: (Int) -> Int): Int =
-        (nodes.minOf { it.key } .. nodes.maxOf { it.key }).minOf(shortestPath)
+    fun cheapestAlignmentOf(nodes: Map<Int, Int>, fuelUsed: (Int) -> Int): Int =
+        (nodes.minOf { it.key } .. nodes.maxOf { it.key }).minOf(fuelUsed)
 
     fun part1(nodes: Map<Int, Int>): Int = cheapestAlignmentOf(nodes)
         { source -> distanceTo(source, nodes) { abs(it - source) * nodes[it]!! } }
