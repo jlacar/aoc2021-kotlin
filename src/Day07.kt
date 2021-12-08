@@ -11,16 +11,12 @@ fun main() {
      * Dijkstra's shortest path from a single source node
      */
     fun part1(input: List<Int>): Int {
-        val frequencies = input.groupingBy { it }.eachCount().also { println("frequencies (${it.size}): $it") }
+        val frequencies = input.groupingBy { it }.eachCount()
         var shortest = Int.MAX_VALUE
         for (source in frequencies.keys) {
-            val others = frequencies.keys.filter { it != source }
-//                    .also { println("source: $source, others: ${it}") }
-
-            val distance = others.map { abs(it - source) * frequencies[it]!! }.sum()
-//                    .also { println("distance: $it") }
-
-            if (distance < shortest) shortest = distance
+            shortest = frequencies.keys.filter { it != source }
+                .map { abs(it - source) * frequencies[it]!! }
+                .sum().let { if (it < shortest) it else shortest }
         }
         return shortest
     }
