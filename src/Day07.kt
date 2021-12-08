@@ -15,7 +15,7 @@ fun main() {
 
     fun part1(input: List<Int>): Int {
         val nodes = input.groupingBy { it }.eachCount()
-        return nodes.keys.map { source -> distancesFrom(source, nodes) }.minOf { it }
+        return nodes.keys.minOf { source -> distancesFrom(source, nodes) }
     }
 
     fun part2(input: List<Int>): Int {
@@ -25,8 +25,9 @@ fun main() {
     // test if implementation meets criteria from the description, like:
     val testInput = toIntList("16,1,2,0,4,2,7,1,2,14")
     check(part1(testInput) == 37)
+    check(part2(testInput) == 168)
 
     val input = toIntList(readInput("Day07").first())
     println(part1(input).also { check(it == 336701) }) // solved
-//    println(part2(input))
+    println(part2(input))
 }
