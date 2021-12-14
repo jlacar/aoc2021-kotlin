@@ -36,10 +36,10 @@ fun main() {
             .split(" | ").last().split(" ")
 
     fun MutableList<Set<Char>>.set1_4_7_8(signals: List<Set<Char>>) {
-        set(1, signals.first { it.size == 2 })
-        set(4, signals.first { it.size == 4 })
-        set(7, signals.first { it.size == 3 })
-        set(8, signals.first { it.size == 7 })
+        this[1] = signals.first { it.size == 2 }
+        this[4] = signals.first { it.size == 4 }
+        this[7] = signals.first { it.size == 3 }
+        this[8] = signals.first { it.size == 7 }
     }
 
     fun MutableList<Set<Char>>.deduce2_3_5(signals: List<Set<Char>>) {
