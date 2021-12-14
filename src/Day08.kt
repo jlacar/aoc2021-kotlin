@@ -7,25 +7,25 @@ fun main() {
 
     /* signals with size == 5 : (2, 3, 5) */
 
-    fun find2(signals: List<Set<Char>>, s4: Set<Char>) = signals
-        .first { it.size == 5 && (s4 subtract it).size == 2 }
+    fun find2(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+        .first { it.size == 5 && (decoder[4] subtract it).size == 2 }
 
-    fun find3(signals: List<Set<Char>>, s4subs2: Set<Char>) = signals
-        .first { it.size == 5 && (s4subs2 subtract it).size == 1 }
+    fun find3(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+        .first { it.size == 5 && (decoder[4] - decoder[2] - it).size == 1 }
 
-    fun find5(signals: List<Set<Char>>, s2_s3: List<Set<Char>>) = signals
-        .first { it.size == 5 && it !in s2_s3 }
+    fun find5(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+        .first { it.size == 5 && it !in decoder.slice(setOf(2,3)) }
 
     /* signals with size == 6 : (6, 9, 0) */
 
-    fun find6(signals: List<Set<Char>>, s7: Set<Char>): Set<Char> = signals
-        .first { it.size == 6 && (it subtract s7).size == 4 }
+    fun find6(signals: List<Set<Char>>, decoder: List<Set<Char>>): Set<Char> = signals
+        .first { it.size == 6 && (it subtract decoder[7]).size == 4 }
 
-    fun find9(signals: List<Set<Char>>, s4unions7: Set<Char>): Set<Char> = signals
-        .first { it.size == 6 && (it subtract s4unions7).size == 1 }
+    fun find9(signals: List<Set<Char>>, decoder: List<Set<Char>>): Set<Char> = signals
+        .first { it.size == 6 && (it - (decoder[4] union decoder[7])).size == 1 }
 
-    fun find0(signals: List<Set<Char>>, s6_s9: List<Set<Char>>) = signals
-        .first { it.size == 6 && it !in s6_s9 }
+    fun find0(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+        .first { it.size == 6 && it !in decoder.slice(setOf(6,9)) }
 
     /* other stuff */
 
@@ -42,12 +42,12 @@ fun main() {
             set(4, signals.first { it.size == 4 })
             set(7, signals.first { it.size == 3 })
             set(8, signals.first { it.size == 7 })
-            set(2, find2(signals, this[4]))
-            set(6, find6(signals, this[7]))
-            set(3, find3(signals, this[4] subtract this[2]))
-            set(9, find9(signals, this[4] union this[7]))
-            set(5, find5(signals, listOf(this[2], this[3])))
-            set(0, find0(signals, listOf(this[6], this[9])))
+            set(2, find2(signals, this))
+            set(6, find6(signals, this))
+            set(3, find3(signals, this))
+            set(9, find9(signals, this))
+            set(5, find5(signals, this))
+            set(0, find0(signals, this))
         }
 
     fun decode(outputValues: List<String>, decoder: List<Set<Char>>) = outputValues
