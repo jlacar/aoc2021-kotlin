@@ -63,22 +63,21 @@ fun main() {
     /* Tests */
 
     val oneEntry = listOf("acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf")
-    part2(oneEntry).also(::println).also(assertSolutionIs(5353))
+    part2(oneEntry).also(::println).also(assertAnswerIs(5353))
 
     val exampleEntries = readInput("Day08_test")
-    part1(exampleEntries).also(::println).also(assertSolutionIs(26))
-    part2(exampleEntries).also(::println).also(assertSolutionIs(61229))
+    part1(exampleEntries).also(::println).also(assertAnswerIs(26))
+    part2(exampleEntries).also(::println).also(assertAnswerIs(61229))
 
     /* Go for Gold! */
 
     val input = readInput("Day08")
-    val earnedGoldStar: (Int) -> Unit = { println("(*)") }
 
     part1(input).also { print("Part 1 answer = $it ") }
-        .also(assertSolutionIs(421))
+        .also(assertAnswerIs(421))
         .also(earnedGoldStar)
 
     part2(input).also { print("Part 2 answer = $it ") }
-        .also(assertSolutionIs(986163))
+        .also(assertAnswerIs(986163))
         .also(earnedGoldStar)
 }
