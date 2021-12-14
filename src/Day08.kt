@@ -18,10 +18,10 @@ fun main() {
 
     /* signals with size == 6 : (6, 9, 0) */
 
-    fun find6(signals: List<Set<Char>>, decoder: List<Set<Char>>): Set<Char> = signals
+    fun find6(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 6 && (it subtract decoder[7]).size == 4 }
 
-    fun find9(signals: List<Set<Char>>, decoder: List<Set<Char>>): Set<Char> = signals
+    fun find9(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 6 && (it - (decoder[4] union decoder[7])).size == 1 }
 
     fun find0(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
@@ -35,26 +35,35 @@ fun main() {
     fun outputValuesIn(entry: String) = entry
             .split(" | ").last().split(" ")
 
+    fun MutableList<Set<Char>>.set1_4_7_8(signals: List<Set<Char>>) {
+        set(1, signals.first { it.size == 2 })
+        set(4, signals.first { it.size == 4 })
+        set(7, signals.first { it.size == 3 })
+        set(8, signals.first { it.size == 7 })
+    }
+
+    fun MutableList<Set<Char>>.deduce2_3_5(signals: List<Set<Char>>) {
+        this[2] = find2(signals, this)
+        this[3] = find3(signals, this)
+        this[5] = find5(signals, this) // must be called last!
+    }
+
+    fun MutableList<Set<Char>>.deduce6_9_0(signals: List<Set<Char>>) {
+        this[6] = find6(signals, this)
+        this[9] = find9(signals, this)
+        this[0] = find0(signals, this) // must be called last!
+    }
+
     fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> =
         buildList<Set<Char>>(10) {
-            // placeholders: each digit maps to corresponding index
             repeat(10) { add(emptySet()) }
-            // digits with unique lengths
-            set(1, signals.first { it.size == 2 })
-            set(4, signals.first { it.size == 4 })
-            set(7, signals.first { it.size == 3 })
-            set(8, signals.first { it.size == 7 })
-            // deduce others: order of these calls matters!
-            set(2, find2(signals, this))
-            set(3, find3(signals, this))
-            set(5, find5(signals, this))
-            set(6, find6(signals, this))
-            set(9, find9(signals, this))
-            set(0, find0(signals, this))
+            set1_4_7_8(signals)  // must be called first!
+            deduce2_3_5(signals)
+            deduce6_9_0(signals)
         }
 
     fun decode(outputValues: List<String>, decoder: List<Set<Char>>) = outputValues
-            .map { it.toSet() }.map { decoder.indexOf(it) }
+        .map { it.toSet() }.map { decoder.indexOf(it) }
 
     fun digitsInOutputDisplay(entry: String): List<Int> =
         decode(outputValuesIn(entry), decoderFor(signalPatternsIn(entry).map { it.toSet() }))
@@ -64,7 +73,7 @@ fun main() {
         .count { it.length in lengthsOfDigits1478 }
 
     fun part2(input: List<String>): Int = input
-            .map { digitsInOutputDisplay(it).fold(0) { acc, n -> acc * 10 + n } }.sum()
+        .map { digitsInOutputDisplay(it).fold(0) { acc, n -> acc * 10 + n } }.sum()
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day08_test")
