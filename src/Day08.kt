@@ -3,18 +3,7 @@
  */
 fun main() {
 
-    /* signals with size == 6 : (6, 9, 0) */
-
-    fun deduce6(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
-        .first { it.size == 6 && (it subtract decoder[7]).size == 4 }
-
-    fun deduce9(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
-        .first { it.size == 6 && (it - (decoder[4] union decoder[7])).size == 1 }
-
-    fun deduce0(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
-        .first { it.size == 6 && it !in decoder.slice(setOf(6,9)) }
-
-    /* solution engine - where the good sh*t happens */
+    /* under the hood, where the power of Kotlin roars and good sh*t happens */
 
     fun signalPatternsIn(entry: String) = entry
             .split(" | ").first().split(" ")
@@ -47,10 +36,6 @@ fun main() {
         )
         selectors.forEach { (digit, deduce) ->
             this[digit] = signals.first { it.size == 6 && deduce(it) } }
-
-        this[6] = deduce6(signals, this)
-        this[9] = deduce9(signals, this)
-        this[0] = deduce0(signals, this) // must be called last!
     }
 
     fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> = buildList() {
