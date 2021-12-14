@@ -3,7 +3,7 @@
  */
 fun main() {
 
-    val lengthsOfDigits1478 = listOf(2, 4, 3, 7)
+    val SIGNAL_LENGTHS_FOR_1_4_7_8 = listOf(2, 4, 3, 7)
 
     /* signals with size == 5 : (2, 3, 5) */
 
@@ -27,7 +27,7 @@ fun main() {
     fun deduce0(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 6 && it !in decoder.slice(setOf(6,9)) }
 
-    /* other stuff */
+    /* solution engine - where the good sh*t happens */
 
     fun signalPatternsIn(entry: String) = entry
             .split(" | ").first().split(" ")
@@ -62,27 +62,30 @@ fun main() {
             deduce6_9_0(signals)
         }
 
-    fun decode(outputValues: List<String>, decoder: List<Set<Char>>) = outputValues
+    fun decode(outputValues: List<String>, decoder: List<Set<Char>>): List<Int> = outputValues
         .map { it.toSet() }.map { decoder.indexOf(it) }
 
     fun digitsInOutputDisplay(entry: String): List<Int> =
         decode(outputValuesIn(entry), decoderFor(signalPatternsIn(entry).map { it.toSet() }))
 
+    /* Main solution functions */
+
     fun part1(input: List<String>): Int = input
         .flatMap { outputValuesIn(it) }
-        .count { it.length in lengthsOfDigits1478 }
+        .count { it.length in SIGNAL_LENGTHS_FOR_1_4_7_8 }
 
     fun part2(input: List<String>): Int = input
         .map { digitsInOutputDisplay(it).fold(0) { acc, n -> acc * 10 + n } }.sum()
 
-    // test if implementation meets criteria from the description, like:
+    /* Tests */
+
     val testInput = readInput("Day08_test")
     part1(testInput).also(::println).also { check(it == 26) }
-
     part2(listOf("acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"))
         .also(::println).also { check(it == 5353) }
-
     part2(testInput).also(::println).also { check(it == 61229)}
+
+    /* Go for Gold! */
 
     val input = readInput("Day08")
     part1(input).also(::println).also { check(it == 421) } // gold star
