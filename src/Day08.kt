@@ -5,6 +5,8 @@ fun main() {
 
     val SIGNAL_LENGTHS_FOR_1_4_7_8 = listOf(2, 4, 3, 7)
 
+    val knownSignalLengths = mapOf(1 to 2, 4 to 4, 7 to 3, 8 to 7)
+
     /* signals with size == 5 : (2, 3, 5) */
 
     fun deduce2(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
@@ -72,7 +74,7 @@ fun main() {
 
     fun part1(input: List<String>): Int = input
         .flatMap { outputValuesIn(it) }
-        .count { it.length in SIGNAL_LENGTHS_FOR_1_4_7_8 }
+        .count { it.length in knownSignalLengths.values }
 
     fun part2(input: List<String>): Int = input
         .map { digitsInOutputDisplay(it).fold(0) { acc, n -> acc * 10 + n } }.sum()
