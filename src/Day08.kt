@@ -37,16 +37,19 @@ fun main() {
 
     fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> =
         buildList<Set<Char>>(10) {
+            // placeholders: each digit maps to corresponding index
             repeat(10) { add(emptySet()) }
+            // digits with unique lengths
             set(1, signals.first { it.size == 2 })
             set(4, signals.first { it.size == 4 })
             set(7, signals.first { it.size == 3 })
             set(8, signals.first { it.size == 7 })
+            // deduce others: order of these calls matters!
             set(2, find2(signals, this))
-            set(6, find6(signals, this))
             set(3, find3(signals, this))
-            set(9, find9(signals, this))
             set(5, find5(signals, this))
+            set(6, find6(signals, this))
+            set(9, find9(signals, this))
             set(0, find0(signals, this))
         }
 
@@ -76,19 +79,3 @@ fun main() {
     part1(input).also(::println).also { check(it == 421) } // gold star
     part2(input).also(::println).also { check(it == 986163) } // gold star
 }
-
-
-/*
- Part 1:
-
- 1 -> cf
- 2 -> acdef
- 3 -> acdfg
- 4 -> bcdf
- 5 -> abdfg
- 6 -> abdefg
- 7 -> acf
- 8 -> abcdefg
- 9 -> abcdfg
-
-*/
