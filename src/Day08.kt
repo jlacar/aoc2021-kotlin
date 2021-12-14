@@ -7,24 +7,24 @@ fun main() {
 
     /* signals with size == 5 : (2, 3, 5) */
 
-    fun find2(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+    fun deduce2(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 5 && (decoder[4] subtract it).size == 2 }
 
-    fun find3(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+    fun deduce3(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 5 && (decoder[4] - decoder[2] - it).size == 1 }
 
-    fun find5(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+    fun deduce5(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 5 && it !in decoder.slice(setOf(2,3)) }
 
     /* signals with size == 6 : (6, 9, 0) */
 
-    fun find6(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+    fun deduce6(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 6 && (it subtract decoder[7]).size == 4 }
 
-    fun find9(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+    fun deduce9(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 6 && (it - (decoder[4] union decoder[7])).size == 1 }
 
-    fun find0(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
+    fun deduce0(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
         .first { it.size == 6 && it !in decoder.slice(setOf(6,9)) }
 
     /* other stuff */
@@ -43,15 +43,15 @@ fun main() {
     }
 
     fun MutableList<Set<Char>>.deduce2_3_5(signals: List<Set<Char>>) {
-        this[2] = find2(signals, this)
-        this[3] = find3(signals, this)
-        this[5] = find5(signals, this) // must be called last!
+        this[2] = deduce2(signals, this)
+        this[3] = deduce3(signals, this)
+        this[5] = deduce5(signals, this) // must be called last!
     }
 
     fun MutableList<Set<Char>>.deduce6_9_0(signals: List<Set<Char>>) {
-        this[6] = find6(signals, this)
-        this[9] = find9(signals, this)
-        this[0] = find0(signals, this) // must be called last!
+        this[6] = deduce6(signals, this)
+        this[9] = deduce9(signals, this)
+        this[0] = deduce0(signals, this) // must be called last!
     }
 
     fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> =
