@@ -63,11 +63,11 @@ fun main() {
     /* Tests */
 
     val oneEntry = listOf("acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf")
-    part2(oneEntry).also(::println).also { check(it == 5353) }
+    part2(oneEntry).also(::println).also(assertSolutionIs(5353))
 
     val exampleEntries = readInput("Day08_test")
-    part1(exampleEntries).also(::println).also { check(it == 26) }
-    part2(exampleEntries).also(::println).also { check(it == 61229)}
+    part1(exampleEntries).also(::println).also(assertSolutionIs(26))
+    part2(exampleEntries).also(::println).also(assertSolutionIs(61229))
 
     /* Go for Gold! */
 
@@ -75,10 +75,10 @@ fun main() {
     val earnedGoldStar: (Int) -> Unit = { println("(*)") }
 
     part1(input).also { print("Part 1 answer = $it ") }
-        .also { check(it == 421) }
+        .also(assertSolutionIs(421))
         .also(earnedGoldStar)
 
     part2(input).also { print("Part 2 answer = $it ") }
-        .also { check(it == 986163) }
+        .also(assertSolutionIs(986163))
         .also(earnedGoldStar)
 }
