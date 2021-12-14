@@ -55,7 +55,7 @@ fun main() {
     }
 
     fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> =
-        buildList<Set<Char>>() {
+        buildList() {
             addAll(List(10) { emptySet() })
             set1_4_7_8(signals)  // must be called first!
             deduce2_3_5(signals)
