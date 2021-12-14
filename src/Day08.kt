@@ -20,9 +20,9 @@ fun main() {
 
     fun MutableList<Set<Char>>.deduce5segmentSignals(signals: List<Set<Char>>) {
         val selectors = mapOf<Int, (Set<Char>) -> Boolean> (
-            2 to { segments -> (this[4] - segments).size == 2},
-            3 to { segments -> (this[4] - this[2] - segments).size == 1},
-            5 to { segments -> segments !in this.slice(listOf(2,3)) }
+            2 to { signal -> (this[4] - signal).size == 2},
+            3 to { signal -> (this[4] - this[2] - signal).size == 1},
+            5 to { signal -> signal !in this.slice(listOf(2,3)) }
         )
         selectors.forEach { (digit, deduce) ->
             this[digit] = signals.first { it.size == 5 && deduce(it) } }
@@ -30,9 +30,9 @@ fun main() {
 
     fun MutableList<Set<Char>>.deduce6segmentSignals(signals: List<Set<Char>>) {
         val selectors = mapOf<Int, (Set<Char>) -> Boolean> (
-            6 to { segments -> (segments - this[7]).size == 4 },
-            9 to { segments -> (segments - (this[4] union this[7])).size == 1},
-            0 to { segments -> segments !in this.slice(setOf(6,9)) }
+            6 to { signal -> (signal - this[7]).size == 4 },
+            9 to { signal -> (signal - (this[4] union this[7])).size == 1},
+            0 to { signal -> signal !in this.slice(setOf(6,9)) }
         )
         selectors.forEach { (digit, deduce) ->
             this[digit] = signals.first { it.size == 6 && deduce(it) } }
