@@ -38,10 +38,10 @@ fun main() {
     fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> =
         buildList<Set<Char>>(10) {
             repeat(10) { add(emptySet()) }
-            set(1, signals.first { it.size == 2 }.toSet())
-            set(4, signals.first { it.size == 4 }.toSet())
-            set(7, signals.first { it.size == 3 }.toSet())
-            set(8, signals.first { it.size == 7 }.toSet())
+            set(1, signals.first { it.size == 2 })
+            set(4, signals.first { it.size == 4 })
+            set(7, signals.first { it.size == 3 })
+            set(8, signals.first { it.size == 7 })
             set(2, find2(signals, this[4]))
             set(6, find6(signals, this[7]))
             set(3, find3(signals, this[4] subtract this[2]))
