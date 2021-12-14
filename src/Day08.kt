@@ -72,12 +72,13 @@ fun main() {
     /* Go for Gold! */
 
     val input = readInput("Day08")
+    val earnedGoldStar: (Int) -> Unit = { println("(*)") }
 
     part1(input).also { print("Part 1 answer = $it ") }
         .also { check(it == 421) }
-        .also { println("(*)")} // gold star
+        .also(earnedGoldStar)
 
     part2(input).also { print("Part 2 answer = $it ") }
         .also { check(it == 986163) }
-        .also { println("(*)")} // gold star
+        .also(earnedGoldStar)
 }
