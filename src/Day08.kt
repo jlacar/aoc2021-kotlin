@@ -5,27 +5,27 @@ fun main() {
 
     val lengthsOfDigits1478 = listOf(2, 4, 3, 7)
 
-    /* digits with code.size == 5 : (2, 3, 5) */
+    /* signals with size == 5 : (2, 3, 5) */
 
-    fun find2(codes: List<Set<Char>>, c4: Set<Char>) = codes
-        .first { it.size == 5 && (c4 subtract it).size == 2 }
+    fun find2(signals: List<Set<Char>>, s4: Set<Char>) = signals
+        .first { it.size == 5 && (s4 subtract it).size == 2 }
 
-    fun find3(codes: List<Set<Char>>, c4sub2: Set<Char>) = codes
-        .first { it.size == 5 && (c4sub2 subtract it).size == 1 }
+    fun find3(signals: List<Set<Char>>, s4subs2: Set<Char>) = signals
+        .first { it.size == 5 && (s4subs2 subtract it).size == 1 }
 
-    fun find5(codes: List<Set<Char>>, c23: List<Set<Char>>) = codes
-        .first { it.size == 5 && it !in c23 }
+    fun find5(signals: List<Set<Char>>, s2_s3: List<Set<Char>>) = signals
+        .first { it.size == 5 && it !in s2_s3 }
 
-    /* digits with code.size == 6 : (6, 9, 0) */
+    /* signals with size == 6 : (6, 9, 0) */
 
-    fun find6(codes: List<Set<Char>>, c7: Set<Char>): Set<Char> = codes
-        .first { it.size == 6 && (it subtract c7).size == 4 }
+    fun find6(signals: List<Set<Char>>, s7: Set<Char>): Set<Char> = signals
+        .first { it.size == 6 && (it subtract s7).size == 4 }
 
-    fun find9(codes: List<Set<Char>>, c4andc7: Set<Char>): Set<Char> = codes
-        .first { it.size == 6 && (it subtract c4andc7).size == 1 }
+    fun find9(signals: List<Set<Char>>, s4unions7: Set<Char>): Set<Char> = signals
+        .first { it.size == 6 && (it subtract s4unions7).size == 1 }
 
-    fun find0(codes: List<Set<Char>>, c69: List<Set<Char>>) = codes
-        .first { it.size == 6 && it !in c69 }
+    fun find0(signals: List<Set<Char>>, s6_s9: List<Set<Char>>) = signals
+        .first { it.size == 6 && it !in s6_s9 }
 
     /* other stuff */
 
