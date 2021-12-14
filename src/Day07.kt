@@ -1,4 +1,5 @@
 import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * AoC 2021, Day 07: The Treachery of Whales
@@ -28,7 +29,8 @@ fun main() {
      *              needed to move a crab to the given position
      */
     fun costToMove(crabs: Map<Int, Int>, position: Int, costFormula: (Int, Int) -> Int): Int =
-        crabs.keys.filter { it != position }.sumOf { costFormula(it, position) * crabs[it]!! }
+        crabs.keys.filter { it != position }
+            .sumOf { costFormula(it, position) * crabs[it]!! }
 
     fun compounding(n: Int) = n * (n + 1) / 2
 
@@ -36,7 +38,23 @@ fun main() {
     val compoundFormula: (Int, Int) -> Int = { crab: Int, position: Int -> compounding(distance(crab, position)) }
 
     fun leastCostLinear(crabs: Map<Int, Int>): Int = cheapestWayToAlign(crabs) { position ->
-        costToMove(crabs, position, linearFormula)
+        costToMove(crabs, position, linearFormula) // .also { println("cost($position) = $it") }
+    } // .also { println("min cost = $it") }
+
+    fun pietsWayPart1(crabs: Map<Int, Int>): Int {
+        val firstPos = crabs.minOf { it.key }
+        val median = crabs.keys.average().toInt()
+        var crabsLeft = 0
+        var crabsRight = crabs.map { it.value }.sum()
+        var cheapest = costToMove(crabs, firstPos, linearFormula)
+        var cost = cheapest + crabsRight
+        (firstPos..median).forEach { pos ->
+            cost += crabsLeft - crabsRight
+            cheapest = min(cheapest, cost)
+            crabsLeft += crabs.getOrDefault(pos, 0)
+            crabsRight -= crabs.getOrDefault(pos, 0)
+        }
+        return cheapest
     }
 
     fun leastCostCompounded(crabs: Map<Int, Int>): Int = cheapestWayToAlign(crabs) { position ->
@@ -45,10 +63,20 @@ fun main() {
 
     // test if implementation meets criteria from the description, like:
     val testInput = toIntList("16,1,2,0,4,2,7,1,2,14").groupingBy { it }.eachCount()
-    check(leastCostLinear(testInput) == 37)
+    leastCostLinear(testInput).also(::println).also { check( it == 34) }
+    pietsWayPart1(testInput).also(::println).also { check(it == 37) }
+
     check(leastCostCompounded(testInput) == 168)
 
     val crabs = toIntList(readInput("Day07").first()).groupingBy { it }.eachCount()
-    println(leastCostLinear(crabs).also { check(it == 336701) })       // accepted solution, Part 1
-    println(leastCostCompounded(crabs).also { check(it == 95167302) })   // accepted solution, Part 2
+    pietsWayPart1(crabs).also(::println)
+        .also { check(it == 336701) }     // accepted solution, Part 1
+    leastCostLinear(crabs).also(::println)
+        .also { check(it == 336701) }     // accepted solution, Part 1
+
+    leastCostCompounded(crabs).also(::println)
+        .also { check(it == 95167302) }   // accepted solution, Part 2
 }
+/**
+ * 0, 1, 2, 2, 5, 6, 7, 8, 25, 40
+ */
