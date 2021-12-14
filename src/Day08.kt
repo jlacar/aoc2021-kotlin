@@ -64,7 +64,7 @@ fun main() {
         .count { it.length in lengthsOfDigits1478 }
 
     fun part2(input: List<String>): Int = input
-            .map { digitsInOutputDisplay(it).fold(0, { acc, n -> acc * 10 + n }) }.sum()
+            .map { digitsInOutputDisplay(it).fold(0) { acc, n -> acc * 10 + n } }.sum()
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day08_test")
