@@ -3,10 +3,6 @@
  */
 fun main() {
 
-    val SIGNAL_LENGTHS_FOR_1_4_7_8 = listOf(2, 4, 3, 7)
-
-    val knownSignalLengths = mapOf(1 to 2, 4 to 4, 7 to 3, 8 to 7)
-
     /* signals with size == 5 : (2, 3, 5) */
 
     fun deduce2(signals: List<Set<Char>>, decoder: List<Set<Char>>) = signals
@@ -37,11 +33,11 @@ fun main() {
     fun outputValuesIn(entry: String) = entry
             .split(" | ").last().split(" ")
 
-    fun MutableList<Set<Char>>.set1_4_7_8(signals: List<Set<Char>>) {
-        this[1] = signals.first { it.size == 2 }
-        this[4] = signals.first { it.size == 4 }
-        this[7] = signals.first { it.size == 3 }
-        this[8] = signals.first { it.size == 7 }
+    val knownSignalLengths = mapOf(1 to 2, 4 to 4, 7 to 3, 8 to 7)
+
+    fun MutableList<Set<Char>>.setKnownSignalPatterns(signals: List<Set<Char>>) {
+        knownSignalLengths.forEach { (digit, length) ->
+            this[digit] = signals.first { it.size == length } }
     }
 
     fun MutableList<Set<Char>>.deduce2_3_5(signals: List<Set<Char>>) {
@@ -56,13 +52,12 @@ fun main() {
         this[0] = deduce0(signals, this) // must be called last!
     }
 
-    fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> =
-        buildList() {
-            addAll(List(10) { emptySet() })
-            set1_4_7_8(signals)  // must be called first!
-            deduce2_3_5(signals)
-            deduce6_9_0(signals)
-        }
+    fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> = buildList() {
+        addAll(List(10) { emptySet() })
+        setKnownSignalPatterns(signals)  // must be called first!
+        deduce2_3_5(signals)
+        deduce6_9_0(signals)
+    }
 
     fun decode(outputValues: List<String>, decoder: List<Set<Char>>): List<Int> = outputValues
         .map { it.toSet() }.map { decoder.indexOf(it) }
@@ -91,6 +86,12 @@ fun main() {
     /* Go for Gold! */
 
     val input = readInput("Day08")
-    part1(input).also(::println).also { check(it == 421) } // gold star
-    part2(input).also(::println).also { check(it == 986163) } // gold star
+
+    part1(input).also { print("Part 1 answer = $it ") }
+        .also { check(it == 421) }
+        .also { println("(*)")} // gold star
+
+    part2(input).also { print("Part 2 answer = $it ") }
+        .also { check(it == 986163) }
+        .also { println("(*)")} // gold star
 }
