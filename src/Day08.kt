@@ -82,9 +82,9 @@ fun main() {
     val oneEntry = listOf("acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf")
     part2(oneEntry).also(::println).also { check(it == 5353) }
 
-    val testInput = readInput("Day08_test")
-    part1(testInput).also(::println).also { check(it == 26) }
-    part2(testInput).also(::println).also { check(it == 61229)}
+    val exampleEntries = readInput("Day08_test")
+    part1(exampleEntries).also(::println).also { check(it == 26) }
+    part2(exampleEntries).also(::println).also { check(it == 61229)}
 
     /* Go for Gold! */
 
