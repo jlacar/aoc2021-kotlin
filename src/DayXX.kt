@@ -7,11 +7,27 @@ fun main() {
         return input.size
     }
 
-    // test if implementation meets criteria from the description, like:
+    /* Scaffolding */
+
+    fun result() {
+        // use this to build out a solution
+    }
+
+    /* Tests */
+
     val testInput = readInput("DayXX_test")
-    check(part1(testInput) == 1)
+    part1(testInput).also { println("Part 1 (test): $it")}
+        .also(assertAnswerIs(1))
 
     val input = readInput("DayXX")
-    println(part1(input))
-    println(part2(input))
+
+    /* Go for gold! */
+
+    part1(input).also { println("Part 1 (final): $it")}
+        // .also(assertAnswerIs(?))
+        // .also(earnedGoldStar)
+
+    part2(input).also { println("Part 2 (final): $it")}
+        // .also(assertAnswerIs(?))
+        // .also(earnedGoldStar)
 }
