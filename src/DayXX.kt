@@ -19,6 +19,9 @@ fun main() {
     part1(testInput).also { println("Part 1 (test): $it")}
         .also(assertAnswerIs(1))
 
+//    part2(testInput).also { println("Part 2 (test): $it")}
+//        .also(assertAnswerIs(?))
+
     val input = readInput("DayXX")
 
     /* Go for gold! */
