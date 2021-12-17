@@ -18,31 +18,39 @@ fun main() {
             this[digit] = signals.first { it.size == length } }
     }
 
-    fun MutableList<Set<Char>>.deduce5segmentSignals(signals: List<Set<Char>>) {
+    fun MutableList<Set<Char>>.deduce5segments(signals: List<Set<Char>>) {
         val selectors = mapOf<Int, (Set<Char>) -> Boolean> (
-            2 to { signal -> (this[4] - signal).size == 2},
-            3 to { signal -> (this[4] - this[2] - signal).size == 1},
-            5 to { signal -> signal !in this.slice(listOf(2,3)) }
+            2 to { signal -> (this[4] - signal).size == 2 },
+            3 to { signal -> (this[7] - signal).isEmpty() },
         )
         selectors.forEach { (digit, deduce) ->
             this[digit] = signals.first { it.size == 5 && deduce(it) } }
     }
 
-    fun MutableList<Set<Char>>.deduce6segmentSignals(signals: List<Set<Char>>) {
+    fun MutableList<Set<Char>>.deduce6segments(signals: List<Set<Char>>) {
         val selectors = mapOf<Int, (Set<Char>) -> Boolean> (
             6 to { signal -> (signal - this[7]).size == 4 },
-            9 to { signal -> (signal - (this[4] union this[7])).size == 1},
-            0 to { signal -> signal !in this.slice(setOf(6,9)) }
+            9 to { signal -> (this[4] - signal).isEmpty() }
         )
         selectors.forEach { (digit, deduce) ->
             this[digit] = signals.first { it.size == 6 && deduce(it) } }
     }
 
+    fun MutableList<Set<Char>>.deduceRemaining(signals: List<Set<Char>>) {
+        val selectors = mapOf<Int, (Set<Char>) -> Boolean> (
+            5 to { signal -> signal.size == 5 && signal !in this.slice(listOf(2,3)) },
+            0 to { signal -> signal.size == 6 && signal !in this.slice(setOf(6,9)) }
+        )
+        selectors.forEach { (digit, deduce) ->
+            this[digit] = signals.first { deduce(it) } }
+    }
+
     fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> = buildList() {
         addAll(List(10) { emptySet() })
-        setKnownSignalPatterns(signals)  // must be called first!
-        deduce5segmentSignals(signals)
-        deduce6segmentSignals(signals)
+        setKnownSignalPatterns(signals)  //.also { println("Known digits")}  // must be called first!
+        deduce5segments(signals)  //.also { println("5-seg digits")}
+        deduce6segments(signals)  //.also { println("6-seg digits")}
+        deduceRemaining(signals)  //.also { println("other digits, $this")}
     }
 
     fun decode(outputValues: List<String>, decoder: List<Set<Char>>): List<Int> = outputValues
