@@ -20,14 +20,14 @@ fun main() {
             2 to { signal -> signal.size == 5 && (this[4] - signal).size == 2 },
             3 to { signal -> signal.size == 5 && (this[7] - signal).isEmpty() },
             6 to { signal -> signal.size == 6 && (this[7] - signal).size == 1 },
-            9 to { signal -> signal.size == 6 && (this[4] - signal).isEmpty() }
+            9 to { signal -> signal.size == 6 && (this[4] - signal).isEmpty() },
         ))
     }
 
     fun MutableList<Set<Char>>.deduceRemaining(signals: List<Set<Char>>) {
         deduceSegments(signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
-            5 to { signal -> signal.size == 5 && signal !in this.slice(listOf(2, 3)) },
-            0 to { signal -> signal.size == 6 && signal !in this.slice(setOf(6, 9)) }
+            5 to { signal -> signal.size == 5 && signal !in this.slice(setOf(2, 3)) },
+            0 to { signal -> signal.size == 6 && signal !in this.slice(setOf(6, 9)) },
         ))
     }
 

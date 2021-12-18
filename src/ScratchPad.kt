@@ -4,14 +4,15 @@ fun main() {
 
 fun day8Part2() {
 
-//    val input = "abcefg cf acdeg acdfg bcdf abdfg abdefg acf abcdefg abcdfg | abdfg acdfg abdfg acdfg"
-    val input =
-//        "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf"
-//        "be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe" // 8394
-//    "edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc" // 9781
-        "bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef" // 1625
+    val input = listOf(
+        "abcefg cf acdeg acdfg bcdf abdfg abdefg acf abcdefg abcdfg | abdfg acdfg abdfg acdfg",  // 5353
+//        "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf",  // 5353
+//        "be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe", // 8394
+//        "edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc", // 9781
+//        "bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef", // 1625
+    )
 
-    val segments = input.split(" | ").first().split(" ")
+    val segments = input.first().split(" | ").first().split(" ")
     val codes = segments.map { it.toSet() }
 
     val decode = buildList<Set<Char>>(10) {
@@ -27,12 +28,40 @@ fun day8Part2() {
         set(0, find0(codes, this[4] union this[7], this[6]) )
         set(9, find9(codes, this[4] union this[7]) )
     }
+    listOf(
+        1 to 2,
+        4 to 2,
+        7 to 2,
+        8 to 2,
+        1 to 5,
+        4 to 5,
+        7 to 5,
+        8 to 5,
+        1 to 3,
+        4 to 3,
+        7 to 3,
+        8 to 3,
+        1 to 6,
+        4 to 6,
+        7 to 6,
+        8 to 6,
+        1 to 9,
+        4 to 9,
+        7 to 9,
+        8 to 9,
+        1 to 0,
+        4 to 0,
+        7 to 0,
+        8 to 0,
+    ).forEach { (index, sig) ->
+        (decode[index] - decode[sig]).also { println("test $index - *$sig = $it") };
+        (decode[sig] - decode[index]).also { println("test *$sig - $index = $it") } }
 
     println(segments.joinToString(",", prefix = "[", postfix = "]"))
     println(codes)
     println(decode)
 
-    translate(input, decode).also { println("translated: $it") }
+    translate(input.first(), decode).also { println("translated: $it") }
 }
 
 fun find9(codes: List<Set<Char>>, c4andc7: Set<Char>): Set<Char> = codes
