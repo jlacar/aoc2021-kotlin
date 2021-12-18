@@ -25,7 +25,7 @@ fun main() {
         deduceSegments(signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
             2 to { signal -> signal.size == 5 && (this[4] - signal).size == 2 },
             3 to { signal -> signal.size == 5 && (this[7] - signal).isEmpty() },
-            6 to { signal -> signal.size == 6 && (signal - this[7]).size == 4 },
+            6 to { signal -> signal.size == 6 && (this[7] - signal).size == 1 },
             9 to { signal -> signal.size == 6 && (this[4] - signal).isEmpty() }
         ))
     }
