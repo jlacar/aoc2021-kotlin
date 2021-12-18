@@ -5,12 +5,6 @@ fun main() {
 
     /* under the hood, where the power of Kotlin roars and good sh*t happens */
 
-    fun signalPatternsIn(entry: String) = entry
-            .split(" | ").first().split(" ")
-
-    fun outputValuesIn(entry: String) = entry
-            .split(" | ").last().split(" ")
-
     val knownSignalLengths = mapOf(1 to 2, 4 to 4, 7 to 3, 8 to 7)
 
     fun MutableList<Set<Char>>.setKnownSignalPatterns(signals: List<Set<Char>>) {
@@ -47,8 +41,14 @@ fun main() {
     fun decode(outputValues: List<String>, decoder: List<Set<Char>>): List<Int> = outputValues
         .map { it.toSet() }.map { decoder.indexOf(it) }
 
+    fun scrambledSignalPatternsIn(entry: String) = entry
+        .split(" | ").first().split(" ")
+
+    fun outputValuesIn(entry: String) = entry
+        .split(" | ").last().split(" ")
+
     fun digitsInOutputDisplay(entry: String): List<Int> =
-        decode(outputValuesIn(entry), decoderFor(signalPatternsIn(entry).map { it.toSet() }))
+        decode(outputValuesIn(entry), decoderFor(scrambledSignalPatternsIn(entry).map { it.toSet() }))
 
     /* Main solution functions */
 
