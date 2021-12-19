@@ -1,41 +1,49 @@
 /**
  * Day 8: Seven Segment Search
+ *
+ * For the complete problem description, see https://adventofcode.com/2021/day/8
  */
 fun main() {
 
     /* under the hood, where the power of Kotlin roars and good sh*t happens */
 
-    val knownSignalLengths = mapOf(1 to 2, 4 to 4, 7 to 3, 8 to 7)
+    val obviousPatterns = mapOf(1 to 2, 4 to 4, 7 to 3, 8 to 7)
 
     fun segmentsIn(signal: Set<Char>) = signal.size
 
-    fun MutableList<Set<Char>>.setKnownSignalPatterns(signals: List<Set<Char>>) {
-        knownSignalLengths.forEach { (digit, length) ->
-            this[digit] = signals.first { segmentsIn(it) == length }
+    val assertUniquePatternIdentified: (List<Set<Char>>) -> Unit = { check(it.size == 1) }
+
+    fun MutableList<Set<Char>>.assignObviousPatterns(segments: List<Set<Char>>) {
+        obviousPatterns.forEach { (digit, count) ->
+            this[digit] = segments.filter { segmentsIn(it) == count }
+                .also(assertUniquePatternIdentified)
+                .first()
         }
     }
 
-    fun MutableList<Set<Char>>.deduceSegments(
-        signals: List<Set<Char>>,
-        selectors: Map<Int, (Set<Char>) -> Boolean>
-    ) = selectors.forEach { (digit, deduce) -> this[digit] = signals.first { deduce(it) } }
+    fun MutableList<Set<Char>>.deduceSegments(segments: List<Set<Char>>, selectors: Map<Int, (Set<Char>) -> Boolean>) =
+        selectors.forEach { (digit, uniquelyIdentifies) ->
+            this[digit] = segments.filter { uniquelyIdentifies(it) }
+                .also(assertUniquePatternIdentified)
+                .first()
+        }
 
-    fun MutableList<Set<Char>>.deduce5and6Segment(signals: List<Set<Char>>) {
+    fun MutableList<Set<Char>>.deduceSignalsWith5and6(segments: List<Set<Char>>) {
         deduceSegments(
-            signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
-                2 to { sig -> segmentsIn(sig) == 5 && segmentsIn(this[4] - sig) == 2 },
-                3 to { sig -> segmentsIn(sig) == 5 && (this[7] - sig).isEmpty() },
-                6 to { sig -> segmentsIn(sig) == 6 && segmentsIn(this[7] - sig) == 1 },
-                9 to { sig -> segmentsIn(sig) == 6 && (this[4] - sig).isEmpty() },
+            segments, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
+                2 to { signal -> segmentsIn(signal) == 5 && segmentsIn(this[4] - signal) == 2 },
+                3 to { signal -> segmentsIn(signal) == 5 && (this[7] - signal).isEmpty() },
+                6 to { signal -> segmentsIn(signal) == 6 && segmentsIn(this[7] - signal) == 1 },
+                9 to { signal -> segmentsIn(signal) == 6 && (this[4] - signal).isEmpty() },
             )
         )
     }
 
-    fun MutableList<Set<Char>>.deduceRemaining(signals: List<Set<Char>>) {
+    fun MutableList<Set<Char>>.deducesDigitsForRemaining(signals: List<Set<Char>>) {
         deduceSegments(
             signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
-                5 to { sig -> segmentsIn(sig) == 5 && sig !in this.slice(setOf(2, 3)) },
-                0 to { sig -> segmentsIn(sig) == 6 && sig !in this.slice(setOf(6, 9)) },
+                5 to { signal -> segmentsIn(signal) == 5 && signal !in this.slice(setOf(2, 3)) },
+                0 to { signal -> segmentsIn(signal) == 6 && signal !in this.slice(setOf(6, 9)) },
             )
         )
     }
@@ -44,9 +52,9 @@ fun main() {
         val segments = signals.map { it.toSet() }
         return buildList() {
             addAll(List(10) { emptySet() })
-            setKnownSignalPatterns(segments)
-            deduce5and6Segment(segments)
-            deduceRemaining(segments)
+            assignObviousPatterns(segments)
+            deduceSignalsWith5and6(segments)
+            deducesDigitsForRemaining(segments)
         }
     }
 
@@ -69,7 +77,7 @@ fun main() {
 
     fun part1(input: List<String>): Int = input
         .flatMap { fourDigitOutputValueIn(it) }
-        .count { it.length in knownSignalLengths.values }
+        .count { it.length in obviousPatterns.values }
 
     fun part2(entries: List<String>): Int =
         entries.sumOf { numberFormedBy(digitsInOutputDisplay(it)) }
