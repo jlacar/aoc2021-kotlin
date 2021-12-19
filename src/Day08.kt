@@ -58,8 +58,9 @@ fun main() {
         }
     }
 
-    fun decode(outputValues: List<String>, decoder: List<Set<Char>>): List<Int> = outputValues
-        .map { it.toSet() }.map { decoder.indexOf(it) }
+    fun decode(digits: List<String>, decoder: List<Set<Char>>): List<Int> = digits
+        .map { digit -> digit.toSet() }
+        .map { segments -> decoder.indexOf(segments) }
 
     fun tenUniqueSignalPatternsIn(entry: String) = entry
         .split(" | ").first().split(" ")
