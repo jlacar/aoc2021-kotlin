@@ -62,14 +62,17 @@ fun main() {
     fun digitsInOutputDisplay(entry: String): List<Int> =
         decode(fourDigitOutputValueIn(entry), decoderFor(tenUniqueSignalPatternsIn(entry)))
 
+    fun numberFormedBy(digitsInOutput: List<Int>) =
+        digitsInOutput.fold(0) { acc, n -> acc * 10 + n }
+
     /* Main solution functions */
 
     fun part1(input: List<String>): Int = input
         .flatMap { fourDigitOutputValueIn(it) }
         .count { it.length in knownSignalLengths.values }
 
-    fun part2(input: List<String>): Int = input
-        .map { digitsInOutputDisplay(it).fold(0) { acc, n -> acc * 10 + n } }.sum()
+    fun part2(entries: List<String>): Int =
+        entries.sumOf { numberFormedBy(digitsInOutputDisplay(it)) }
 
     /* Tests */
 
