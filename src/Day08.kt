@@ -11,26 +11,26 @@ fun main() {
 
     fun segmentsIn(signal: Set<Char>) = signal.size
 
-    val assertUniquePatternIdentified: (List<Set<Char>>) -> Unit = { check(it.size == 1) }
+    val assertUniqueMatchFound: (List<Set<Char>>) -> Unit = { check(it.size == 1) }
 
-    fun MutableList<Set<Char>>.assignObviousPatterns(segments: List<Set<Char>>) {
-        obviousPatterns.forEach { (digit, count) ->
-            this[digit] = segments.filter { segmentsIn(it) == count }
-                .also(assertUniquePatternIdentified)
+    fun MutableList<Set<Char>>.mapObviousPatterns(signals: List<Set<Char>>) {
+        obviousPatterns.forEach { (digit, knownCount) ->
+            this[digit] = signals.filter { signal -> segmentsIn(signal) == knownCount }
+                .also(assertUniqueMatchFound)
                 .first()
         }
     }
 
     fun MutableList<Set<Char>>.deduceSegments(segments: List<Set<Char>>, selectors: Map<Int, (Set<Char>) -> Boolean>) =
-        selectors.forEach { (digit, uniquelyIdentifies) ->
-            this[digit] = segments.filter { uniquelyIdentifies(it) }
-                .also(assertUniquePatternIdentified)
+        selectors.forEach { (digit, whatUniquelyIdentifies) ->
+            this[digit] = segments.filter { whatUniquelyIdentifies(it) }
+                .also(assertUniqueMatchFound)
                 .first()
         }
 
-    fun MutableList<Set<Char>>.deduceSignalsWith5and6(segments: List<Set<Char>>) {
+    fun MutableList<Set<Char>>.deduceSignalsWith5and6(signals: List<Set<Char>>) {
         deduceSegments(
-            segments, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
+            signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
                 2 to { signal -> segmentsIn(signal) == 5 && segmentsIn(this[4] - signal) == 2 },
                 3 to { signal -> segmentsIn(signal) == 5 && (this[7] - signal).isEmpty() },
                 6 to { signal -> segmentsIn(signal) == 6 && segmentsIn(this[7] - signal) == 1 },
@@ -39,7 +39,7 @@ fun main() {
         )
     }
 
-    fun MutableList<Set<Char>>.deducesDigitsForRemaining(signals: List<Set<Char>>) {
+    fun MutableList<Set<Char>>.deduceRemainingUnmapped(signals: List<Set<Char>>) {
         deduceSegments(
             signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
                 5 to { signal -> segmentsIn(signal) == 5 && signal !in this.slice(setOf(2, 3)) },
@@ -49,12 +49,12 @@ fun main() {
     }
 
     fun decoderFor(signals: List<String>): List<Set<Char>> {
-        val segments = signals.map { it.toSet() }
+        val segmentedSignals = signals.map { it.toSet() }
         return buildList() {
             addAll(List(10) { emptySet() })
-            assignObviousPatterns(segments)
-            deduceSignalsWith5and6(segments)
-            deducesDigitsForRemaining(segments)
+            mapObviousPatterns(segmentedSignals)
+            deduceSignalsWith5and6(segmentedSignals)
+            deduceRemainingUnmapped(segmentedSignals)
         }
     }
 
