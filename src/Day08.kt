@@ -7,53 +7,65 @@ fun main() {
 
     val knownSignalLengths = mapOf(1 to 2, 4 to 4, 7 to 3, 8 to 7)
 
+    fun segmentsIn(signal: Set<Char>) = signal.size
+
     fun MutableList<Set<Char>>.setKnownSignalPatterns(signals: List<Set<Char>>) {
         knownSignalLengths.forEach { (digit, length) ->
-            this[digit] = signals.first { it.size == length } }
+            this[digit] = signals.first { segmentsIn(it) == length }
+        }
     }
 
-    fun MutableList<Set<Char>>.deduceSegments(signals: List<Set<Char>>, selectors: Map<Int, (Set<Char>) -> Boolean>) =
-        selectors.forEach { (digit, deduce) -> this[digit] = signals.first { deduce(it) } }
+    fun MutableList<Set<Char>>.deduceSegments(
+        signals: List<Set<Char>>,
+        selectors: Map<Int, (Set<Char>) -> Boolean>
+    ) = selectors.forEach { (digit, deduce) -> this[digit] = signals.first { deduce(it) } }
 
     fun MutableList<Set<Char>>.deduce5and6Segment(signals: List<Set<Char>>) {
-        deduceSegments(signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
-            2 to { signal -> signal.size == 5 && (this[4] - signal).size == 2 },
-            3 to { signal -> signal.size == 5 && (this[7] - signal).isEmpty() },
-            6 to { signal -> signal.size == 6 && (this[7] - signal).size == 1 },
-            9 to { signal -> signal.size == 6 && (this[4] - signal).isEmpty() },
-        ))
+        deduceSegments(
+            signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
+                2 to { sig -> segmentsIn(sig) == 5 && segmentsIn(this[4] - sig) == 2 },
+                3 to { sig -> segmentsIn(sig) == 5 && (this[7] - sig).isEmpty() },
+                6 to { sig -> segmentsIn(sig) == 6 && segmentsIn(this[7] - sig) == 1 },
+                9 to { sig -> segmentsIn(sig) == 6 && (this[4] - sig).isEmpty() },
+            )
+        )
     }
 
     fun MutableList<Set<Char>>.deduceRemaining(signals: List<Set<Char>>) {
-        deduceSegments(signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
-            5 to { signal -> signal.size == 5 && signal !in this.slice(setOf(2, 3)) },
-            0 to { signal -> signal.size == 6 && signal !in this.slice(setOf(6, 9)) },
-        ))
+        deduceSegments(
+            signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
+                5 to { sig -> segmentsIn(sig) == 5 && sig !in this.slice(setOf(2, 3)) },
+                0 to { sig -> segmentsIn(sig) == 6 && sig !in this.slice(setOf(6, 9)) },
+            )
+        )
     }
 
-    fun decoderFor(signals: List<Set<Char>>): List<Set<Char>> = buildList() {
-        addAll(List(10) { emptySet() })
-        setKnownSignalPatterns(signals)
-        deduce5and6Segment(signals)
-        deduceRemaining(signals)
+    fun decoderFor(signals: List<String>): List<Set<Char>> {
+        val segments = signals.map { it.toSet() }
+        return buildList() {
+            addAll(List(10) { emptySet() })
+            setKnownSignalPatterns(segments)
+            deduce5and6Segment(segments)
+            deduceRemaining(segments)
+        }
     }
 
     fun decode(outputValues: List<String>, decoder: List<Set<Char>>): List<Int> = outputValues
         .map { it.toSet() }.map { decoder.indexOf(it) }
 
-    fun scrambledSignalPatternsIn(entry: String) = entry
+    fun tenUniqueSignalPatternsIn(entry: String) = entry
         .split(" | ").first().split(" ")
 
-    fun outputValuesIn(entry: String) = entry
+    fun fourDigitOutputValueIn(entry: String) = entry
         .split(" | ").last().split(" ")
 
     fun digitsInOutputDisplay(entry: String): List<Int> =
-        decode(outputValuesIn(entry), decoderFor(scrambledSignalPatternsIn(entry).map { it.toSet() }))
+        decode(fourDigitOutputValueIn(entry), decoderFor(tenUniqueSignalPatternsIn(entry)))
 
     /* Main solution functions */
 
     fun part1(input: List<String>): Int = input
-        .flatMap { outputValuesIn(it) }
+        .flatMap { fourDigitOutputValueIn(it) }
         .count { it.length in knownSignalLengths.values }
 
     fun part2(input: List<String>): Int = input
