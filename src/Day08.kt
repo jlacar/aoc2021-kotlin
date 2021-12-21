@@ -48,19 +48,19 @@ fun main() {
     fun MutableList<Signal>.deduce5and6segment(signals: List<Signal>) {
         deduceSegments(
             signals, selectors = mapOf<Int, (Signal) -> Boolean>(
-                2 to { signal -> signal.segmentCount == 5 && (this[4] - signal).segmentCount == 2 },
-                3 to { signal -> signal.segmentCount == 5 && (this[7] - signal).segmentCount == 0 },
-                6 to { signal -> signal.segmentCount == 6 && (this[7] - signal).segmentCount == 1 },
-                9 to { signal -> signal.segmentCount == 6 && (this[4] - signal).segmentCount == 0 },
+                2 to { it.segmentCount == 5 && (this[4] - it).segmentCount == 2 },
+                3 to { it.segmentCount == 5 && (this[7] - it).segmentCount == 0 },
+                6 to { it.segmentCount == 6 && (this[7] - it).segmentCount == 1 },
+                9 to { it.segmentCount == 6 && (this[4] - it).segmentCount == 0 },
             )
         )
     }
 
-    fun MutableList<Signal>.deduceOtherUnmapped(signals: List<Signal>) {
+    fun MutableList<Signal>.deduceRemaining(signals: List<Signal>) {
         deduceSegments(
             signals, selectors = mapOf<Int, (Signal) -> Boolean>(
-                5 to { signal -> signal.segmentCount == 5 && signal !in this.slice(setOf(2, 3)) },
-                0 to { signal -> signal.segmentCount == 6 && signal !in this.slice(setOf(6, 9)) },
+                5 to { it.segmentCount == 5 && it !in this.slice(setOf(2, 3)) },
+                0 to { it.segmentCount == 6 && it !in this.slice(setOf(6, 9)) },
             )
         )
     }
@@ -70,7 +70,7 @@ fun main() {
             addAll(List(10) { Signal() })
             mapObviousPatterns(signals)
             deduce5and6segment(signals)
-            deduceOtherUnmapped(signals)
+            deduceRemaining(signals)
         }
 
     fun decode(digits: List<Signal>, decoder: List<Signal>): List<Int> = digits
