@@ -1,3 +1,22 @@
+data class Signal(val segments: Set<Char>) {
+    constructor(value: String = ""): this(value.toSet())
+
+    val segmentCount = segments.size
+
+    override fun equals(other: Any?) =
+        other is Signal && segments == other.segments
+
+    override fun hashCode(): Int = segments.hashCode()
+
+    override fun toString() = segments.toString()
+
+    operator fun minus(other: Signal): Signal =
+        Signal(segments - other.segments)
+
+    operator fun contains(col: Collection<Signal>): Boolean =
+        col.contains(this)
+}
+
 /**
  * Day 8: Seven Segment Search
  *
@@ -9,64 +28,59 @@ fun main() {
 
     val obviousPatterns = mapOf(1 to 2, 4 to 4, 7 to 3, 8 to 7)
 
-    fun segmentsIn(signal: Set<Char>) = signal.size
+    val assertUniqueMatchFound: (List<Signal>) -> Unit = { check(it.size == 1) }
 
-    val assertUniqueMatchFound: (List<Set<Char>>) -> Unit = { check(it.size == 1) }
-
-    fun MutableList<Set<Char>>.mapObviousPatterns(signals: List<Set<Char>>) {
+    fun MutableList<Signal>.mapObviousPatterns(signals: List<Signal>) {
         obviousPatterns.forEach { (digit, knownCount) ->
-            this[digit] = signals.filter { signal -> segmentsIn(signal) == knownCount }
+            this[digit] = signals.filter { it.segmentCount == knownCount }
                 .also(assertUniqueMatchFound)
                 .first()
         }
     }
 
-    fun MutableList<Set<Char>>.deduceSegments(segments: List<Set<Char>>, selectors: Map<Int, (Set<Char>) -> Boolean>) =
+    fun MutableList<Signal>.deduceSegments(segments: List<Signal>, selectors: Map<Int, (Signal) -> Boolean>) =
         selectors.forEach { (digit, whatUniquelyIdentifies) ->
             this[digit] = segments.filter { whatUniquelyIdentifies(it) }
                 .also(assertUniqueMatchFound)
                 .first()
         }
 
-    fun MutableList<Set<Char>>.deduceSignalsWith5and6(signals: List<Set<Char>>) {
+    fun MutableList<Signal>.deduce5and6segment(signals: List<Signal>) {
         deduceSegments(
-            signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
-                2 to { signal -> segmentsIn(signal) == 5 && segmentsIn(this[4] - signal) == 2 },
-                3 to { signal -> segmentsIn(signal) == 5 && (this[7] - signal).isEmpty() },
-                6 to { signal -> segmentsIn(signal) == 6 && segmentsIn(this[7] - signal) == 1 },
-                9 to { signal -> segmentsIn(signal) == 6 && (this[4] - signal).isEmpty() },
+            signals, selectors = mapOf<Int, (Signal) -> Boolean>(
+                2 to { signal -> signal.segmentCount == 5 && (this[4] - signal).segmentCount == 2 },
+                3 to { signal -> signal.segmentCount == 5 && (this[7] - signal).segmentCount == 0 },
+                6 to { signal -> signal.segmentCount == 6 && (this[7] - signal).segmentCount == 1 },
+                9 to { signal -> signal.segmentCount == 6 && (this[4] - signal).segmentCount == 0 },
             )
         )
     }
 
-    fun MutableList<Set<Char>>.deduceRemainingUnmapped(signals: List<Set<Char>>) {
+    fun MutableList<Signal>.deduceOtherUnmapped(signals: List<Signal>) {
         deduceSegments(
-            signals, selectors = mapOf<Int, (Set<Char>) -> Boolean>(
-                5 to { signal -> segmentsIn(signal) == 5 && signal !in this.slice(setOf(2, 3)) },
-                0 to { signal -> segmentsIn(signal) == 6 && signal !in this.slice(setOf(6, 9)) },
+            signals, selectors = mapOf<Int, (Signal) -> Boolean>(
+                5 to { signal -> signal.segmentCount == 5 && signal !in this.slice(setOf(2, 3)) },
+                0 to { signal -> signal.segmentCount == 6 && signal !in this.slice(setOf(6, 9)) },
             )
         )
     }
 
-    fun decoderFor(signals: List<String>): List<Set<Char>> {
-        val segmentedSignals = signals.map { it.toSet() }
-        return buildList() {
-            addAll(List(10) { emptySet() })
-            mapObviousPatterns(segmentedSignals)
-            deduceSignalsWith5and6(segmentedSignals)
-            deduceRemainingUnmapped(segmentedSignals)
+    fun decoderFor(signals: List<Signal>): List<Signal> =
+        buildList() {
+            addAll(List(10) { Signal() })
+            mapObviousPatterns(signals)
+            deduce5and6segment(signals)
+            deduceOtherUnmapped(signals)
         }
-    }
 
-    fun decode(digits: List<String>, decoder: List<Set<Char>>): List<Int> = digits
-        .map { digit -> digit.toSet() }
+    fun decode(digits: List<Signal>, decoder: List<Signal>): List<Int> = digits
         .map { segments -> decoder.indexOf(segments) }
 
     fun tenUniqueSignalPatternsIn(entry: String) = entry
-        .split(" | ").first().split(" ")
+        .split(" | ").first().split(" ").map { Signal(it) }
 
     fun fourDigitOutputValueIn(entry: String) = entry
-        .split(" | ").last().split(" ")
+        .split(" | ").last().split(" ").map { Signal(it) }
 
     fun digitsInOutputDisplay(entry: String): List<Int> =
         decode(fourDigitOutputValueIn(entry), decoderFor(tenUniqueSignalPatternsIn(entry)))
@@ -78,7 +92,7 @@ fun main() {
 
     fun part1(input: List<String>): Int = input
         .flatMap { fourDigitOutputValueIn(it) }
-        .count { it.length in obviousPatterns.values }
+        .count { it.segmentCount in obviousPatterns.values }
 
     fun part2(entries: List<String>): Int =
         entries.sumOf { numberFormedBy(digitsInOutputDisplay(it)) }
