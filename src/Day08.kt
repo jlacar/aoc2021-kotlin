@@ -30,7 +30,7 @@ fun main() {
 
     val assertUniqueMatchFound: (List<Signal>) -> Unit = { check(it.size == 1) }
 
-    fun MutableList<Signal>.mapObviousPatterns(signals: List<Signal>) {
+    fun MutableList<Signal>.mapUnique(signals: List<Signal>) {
         obviousPatterns.forEach { (digit, knownCount) ->
             this[digit] = signals.filter { it.segmentCount == knownCount }
                 .also(assertUniqueMatchFound)
@@ -68,7 +68,7 @@ fun main() {
     fun decoderFor(signals: List<Signal>): List<Signal> =
         buildList() {
             addAll(List(10) { Signal() })
-            mapObviousPatterns(signals)
+            mapUnique(signals)
             deduce5and6segment(signals)
             deduceRemaining(signals)
         }
